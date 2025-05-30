@@ -30,7 +30,7 @@ const GAME_CHALLENGES = [
     description: 'Navigiere durch das Giftlabor',
     difficulty: 'Mittel',
     estimatedTime: '2-4 Min',
-    digit: '?',
+    digit: '9',
     position: 3,
     route: '/game/maze'
   },
