@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useGame } from '../../context/GameContext';
 import PlayerStatus from '../../components/PlayerStatus';
 
@@ -39,6 +39,8 @@ export default function MazeGame() {
   const { gameState, completeChallenge, isChallengeLocked } = useGame();
   const isAlreadyCompleted = gameState.completedChallenges.includes('maze');
   const isLocked = isChallengeLocked('maze');
+
+  const gameContainerRef = useRef<HTMLDivElement>(null);
 
   // Initialize grid
   const initializeGrid = useCallback(() => {
@@ -120,6 +122,8 @@ export default function MazeGame() {
         { dx: 0, dy: 1 }, { dx: 0, dy: -1 }  // Vertical
       ];
 
+      const destroyedBombs: Position[] = [];
+
       directions.forEach(({ dx, dy }) => {
         for (let i = 0; i <= explosionRange; i++) {
           const x = bombX + dx * i;
@@ -139,7 +143,12 @@ export default function MazeGame() {
               grid[y][x] = { type: 'explosion', explosionTimer: EXPLOSION_DURATION };
             }
             break;
-          } else if (cell.type === 'empty' || cell.type === 'bomb') {
+          } else if (cell.type === 'empty') {
+            grid[y][x] = { type: 'explosion', explosionTimer: EXPLOSION_DURATION };
+          } else if (cell.type === 'bomb') {
+            // Another bomb was destroyed by this explosion
+            console.log('Bomb at', x, y, 'destroyed by explosion from', bombX, bombY);
+            destroyedBombs.push({ x, y });
             grid[y][x] = { type: 'explosion', explosionTimer: EXPLOSION_DURATION };
           }
 
@@ -149,6 +158,17 @@ export default function MazeGame() {
           }
         }
       });
+
+      // Remove destroyed bombs from the bombs array
+      if (destroyedBombs.length > 0) {
+        setBombs(prev => {
+          const newBombs = prev.filter(bomb => 
+            !destroyedBombs.some(destroyed => destroyed.x === bomb.x && destroyed.y === bomb.y)
+          );
+          console.log('Chain explosion destroyed', destroyedBombs.length, 'bombs. Bombs before:', prev.length, 'after:', newBombs.length);
+          return newBombs;
+        });
+      }
     };
 
     const interval = setInterval(() => {
@@ -173,7 +193,12 @@ export default function MazeGame() {
                 // Explode bomb
                 console.log('Exploding bomb at:', x, y);
                 explodeBomb(newGrid, x, y);
-                setBombs(prev => prev.filter(bomb => !(bomb.x === x && bomb.y === y)));
+                // Remove the original exploding bomb
+                setBombs(prev => {
+                  const newBombs = prev.filter(bomb => !(bomb.x === x && bomb.y === y));
+                  console.log('Removing original bomb at', x, y, '. Bombs before:', prev.length, 'after:', newBombs.length);
+                  return newBombs;
+                });
                 hasChanges = true;
               } else {
                 cell.bombTimer = cell.bombTimer - 100;
@@ -207,15 +232,26 @@ export default function MazeGame() {
   }, [grid]);
 
   const collectPowerup = useCallback((powerupType: 'extraBomb' | 'biggerExplosion' | 'speed') => {
+    console.log('Collecting powerup:', powerupType);
     switch (powerupType) {
       case 'extraBomb':
-        setMaxBombs(prev => prev + 1);
+        setMaxBombs(prev => {
+          console.log('Increasing maxBombs from', prev, 'to', prev + 1);
+          return prev + 1;
+        });
         break;
       case 'biggerExplosion':
-        setExplosionRange(prev => prev + 1);
+        setExplosionRange(prev => {
+          console.log('Increasing explosionRange from', prev, 'to', prev + 1);
+          return prev + 1;
+        });
         break;
       case 'speed':
-        setMoveSpeed(prev => Math.max(100, prev - 50));
+        setMoveSpeed(prev => {
+          const newSpeed = Math.max(100, prev - 50);
+          console.log('Increasing speed from', prev, 'to', newSpeed);
+          return newSpeed;
+        });
         break;
     }
   }, []);
@@ -263,13 +299,20 @@ export default function MazeGame() {
   }, [gameWon, gameOver, grid, lastMoveTime, moveSpeed, gameStarted, playerPos, canMoveTo, exitPos, isAlreadyCompleted, completeChallenge, collectPowerup]);
 
   const placeBomb = useCallback(() => {
-    if (gameWon || gameOver || bombs.length >= maxBombs || !grid || grid.length === 0) return;
+    console.log('placeBomb called - current bombs:', bombs.length, 'maxBombs:', maxBombs);
+    if (gameWon || gameOver || bombs.length >= maxBombs || !grid || grid.length === 0) {
+      console.log('placeBomb blocked:', { gameWon, gameOver, bombsLength: bombs.length, maxBombs, gridReady: grid.length > 0 });
+      return;
+    }
     
     const { x, y } = playerPos;
     const currentCell = grid[y][x];
     
     // Can only place bomb on empty space or where player is standing
-    if (currentCell.type !== 'empty') return;
+    if (currentCell.type !== 'empty') {
+      console.log('Cannot place bomb - cell type:', currentCell.type);
+      return;
+    }
 
     console.log('Placing bomb at:', x, y, 'with timer:', BOMB_TIMER);
 
@@ -292,41 +335,47 @@ export default function MazeGame() {
       return newGrid;
     });
 
-    setBombs(prev => [...prev, { x, y }]);
+    setBombs(prev => {
+      const newBombs = [...prev, { x, y }];
+      console.log('Bombs after placement:', newBombs.length);
+      return newBombs;
+    });
   }, [gameWon, gameOver, bombs.length, maxBombs, grid, playerPos]);
 
   // Keyboard controls
   const handleKeyPress = useCallback((e: KeyboardEvent) => {
     if (isLocked || !grid || grid.length === 0) return;
     
+    // Prevent default for all game keys to avoid browser scrolling/navigation
+    const gameKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'W', 's', 'S', 'a', 'A', 'd', 'D', ' ', 'Enter'];
+    if (gameKeys.includes(e.key)) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
     switch (e.key) {
       case 'ArrowUp':
       case 'w':
       case 'W':
-        e.preventDefault();
         handleMove('up');
         break;
       case 'ArrowDown':
       case 's':
       case 'S':
-        e.preventDefault();
         handleMove('down');
         break;
       case 'ArrowLeft':
       case 'a':
       case 'A':
-        e.preventDefault();
         handleMove('left');
         break;
       case 'ArrowRight':
       case 'd':
       case 'D':
-        e.preventDefault();
         handleMove('right');
         break;
       case ' ':
       case 'Enter':
-        e.preventDefault();
         placeBomb();
         break;
     }
@@ -336,6 +385,13 @@ export default function MazeGame() {
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [handleKeyPress]);
+
+  // Focus game container on mount to capture keyboard events
+  useEffect(() => {
+    if (gameContainerRef.current && !isLocked) {
+      gameContainerRef.current.focus();
+    }
+  }, [isLocked]);
 
   const resetGame = () => {
     setGrid(initializeGrid());
@@ -412,7 +468,13 @@ export default function MazeGame() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-green-900 to-black text-white p-4">
+    <div 
+      ref={gameContainerRef}
+      tabIndex={0}
+      className="min-h-screen bg-gradient-to-br from-gray-900 via-green-900 to-black text-white p-4 focus:outline-none"
+      onFocus={() => console.log('Game focused')}
+      onClick={() => gameContainerRef.current?.focus()}
+    >
       <div className="max-w-7xl mx-auto">
         
         {/* Header */}
@@ -465,8 +527,8 @@ export default function MazeGame() {
                   <div className="text-gray-400">Zeit</div>
                 </div>
                 <div>
-                  <div className="text-blue-400 font-bold">{maxBombs}</div>
-                  <div className="text-gray-400">Max Bomben</div>
+                  <div className="text-blue-400 font-bold">{bombs.length}/{maxBombs}</div>
+                  <div className="text-gray-400">Bomben</div>
                 </div>
                 <div>
                   <div className="text-orange-400 font-bold">{explosionRange}</div>
@@ -477,24 +539,6 @@ export default function MazeGame() {
                   <div className="text-gray-400">Geschwindigkeit</div>
                 </div>
               </div>
-              
-              {/* Debug: Show active bombs */}
-              {bombs.length > 0 && (
-                <div className="mt-4 text-center">
-                  <div className="text-sm text-yellow-400">
-                    Aktive Bomben: {bombs.length}
-                  </div>
-                  {bombs.map((bomb, index) => {
-                    const cell = grid[bomb.y]?.[bomb.x];
-                    const timer = cell?.bombTimer ? Math.ceil(cell.bombTimer / 1000) : 0;
-                    return (
-                      <div key={index} className="text-xs text-gray-300">
-                        Bombe bei ({bomb.x},{bomb.y}): {timer}s
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
             </div>
             
             {/* Game Board */}
