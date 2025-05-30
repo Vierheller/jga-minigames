@@ -60,6 +60,7 @@ export default function Home() {
   const [showContent, setShowContent] = useState(false);
   const [pulseEffect, setPulseEffect] = useState(false);
   const [showOverview, setShowOverview] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(15 * 60); // 15 minutes in seconds
   const { gameState, getProgress, isChallengeLocked } = useGame();
 
   useEffect(() => {
@@ -75,8 +76,28 @@ export default function Home() {
     };
   }, []);
 
+  // Global countdown timer
+  useEffect(() => {
+    if (timeLeft > 0 && getProgress().completed < 5) {
+      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [timeLeft, getProgress]);
+
   const progress = getProgress();
   const codeDigitsCollected = Object.keys(gameState.codeDigits).length;
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const getTimeColor = () => {
+    if (timeLeft < 300) return 'text-red-400'; // Less than 5 minutes
+    if (timeLeft < 600) return 'text-orange-400'; // Less than 10 minutes
+    return 'text-green-400';
+  };
 
   const getChallengeStatus = (challengeId: string) => {
     if (gameState.completedChallenges.includes(challengeId)) {
@@ -128,7 +149,7 @@ export default function Home() {
         
         {/* Skull/Warning Icon */}
         <div className={`mb-8 text-6xl transition-all duration-500 ${pulseEffect ? 'scale-110 text-red-400' : 'scale-100 text-red-500'}`}>
-          ☠️
+          🐍
         </div>
 
         {/* Main Title */}
@@ -137,8 +158,19 @@ export default function Home() {
         </h1>
         
         <h2 className="text-2xl md:text-3xl font-semibold text-center mb-8 text-green-400">
-          Das Gegengift-Rätsel
+          Das Gegengift-Rennen
         </h2>
+
+        {/* Countdown Timer */}
+        <div className="mb-8 bg-black/60 border-2 border-red-500 rounded-lg p-6 text-center">
+          <div className="text-sm text-red-300 mb-2">⏰ ZEIT BIS ZUR VOLLSTÄNDIGEN VERGIFTUNG</div>
+          <div className={`text-5xl font-mono font-bold ${getTimeColor()}`}>
+            {formatTime(timeLeft)}
+          </div>
+          <div className="text-xs text-gray-400 mt-2">
+            {timeLeft < 300 ? 'KRITISCH!' : timeLeft < 600 ? 'WARNUNG!' : 'STABIL'}
+          </div>
+        </div>
 
         {/* Story Box */}
         <div className="max-w-2xl mx-auto bg-black/50 backdrop-blur-sm border border-red-500/30 rounded-lg p-8 mb-8 shadow-2xl">
@@ -148,21 +180,30 @@ export default function Home() {
             </p>
             
             <p className="text-lg leading-relaxed">
-              <span className="font-bold text-white">Dominik</span> wurde vergiftet! 
-              Das Gift wirkt schnell und nur ein spezielles Gegengift kann ihn retten.
+              <span className="font-bold text-white">Dominik</span> wurde von einer giftigen Schlange gebissen! 
+              Das Venom breitet sich schnell aus und er hat nur noch <span className="font-bold text-red-400">15 Minuten</span> Zeit.
             </p>
             
             <p className="text-lg leading-relaxed">
-              Um das Gegengift zu erhalten, muss er eine Reihe von Rätseln lösen 
-              und Mini-Spiele meistern, um einen <span className="font-bold text-green-400">6-stelligen Giftcode</span> zu entschlüsseln.
+              Um das lebensrettende Gegengift zu erhalten, muss er <span className="font-bold text-green-400">ALLE 5 Herausforderungen</span> bestehen 
+              und den <span className="font-bold text-yellow-400">6-stelligen Giftcode</span> entschlüsseln.
             </p>
+
+            <div className="bg-blue-900/30 border border-blue-500 rounded p-4 mt-6">
+              <p className="text-sm text-blue-200">
+                💡 <strong>Bonus-Zeit:</strong> Herausragende Leistungen in den Mini-Spielen können zusätzliche Zeit gewähren!
+              </p>
+              <p className="text-sm text-blue-200 mt-2">
+                🎯 <strong>Ziel:</strong> Alle Herausforderungen abschließen bevor die Zeit abläuft
+              </p>
+            </div>
             
-            <div className="bg-red-900/30 border border-red-500 rounded p-4 mt-6">
+            <div className="bg-red-900/30 border border-red-500 rounded p-4 mt-4">
               <p className="text-sm text-red-200">
-                ⏰ <strong>Zeit läuft ab:</strong> Etwa 10-15 Minuten bis zur vollständigen Vergiftung
+                ⚠️ <strong>Warnung:</strong> Nur wer ALLE Herausforderungen besteht, erhält das vollständige Gegengift!
               </p>
               <p className="text-sm text-red-200 mt-2">
-                💀 <strong>Warnung:</strong> Fehlschläge können zu zusätzlichen Strafen führen
+                💀 <strong>Fehlschlag bedeutet:</strong> Das Venom gewinnt...
               </p>
             </div>
           </div>
@@ -171,19 +212,25 @@ export default function Home() {
         {/* Progress Display */}
         {progress.completed > 0 && (
           <div className="mb-6 bg-black/40 border border-green-500/30 rounded-lg p-4 max-w-md mx-auto">
-            <h3 className="text-lg font-semibold text-green-400 mb-3 text-center">🎯 Fortschritt</h3>
+            <h3 className="text-lg font-semibold text-green-400 mb-3 text-center">🎯 Überlebens-Fortschritt</h3>
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span>Herausforderungen:</span>
-                <span className="text-green-400">{progress.completed}/{progress.total}</span>
+                <span className="text-green-400">{progress.completed}/5 (ALLE ERFORDERLICH)</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span>Code-Ziffern:</span>
                 <span className="text-yellow-400">{codeDigitsCollected}/6</span>
               </div>
+              <div className="w-full bg-gray-700 rounded-full h-3 mt-3">
+                <div 
+                  className="h-full bg-gradient-to-r from-red-500 via-orange-500 to-green-500 rounded-full transition-all duration-500"
+                  style={{ width: `${(progress.completed / 5) * 100}%` }}
+                ></div>
+              </div>
               {codeDigitsCollected > 0 && (
                 <div className="mt-3 p-2 bg-gray-800 rounded text-center">
-                  <span className="text-xs text-gray-400">Gesammelte Ziffern:</span>
+                  <span className="text-xs text-gray-400">Gesammelte Code-Ziffern:</span>
                   <div className="text-lg font-mono mt-1">
                     {[1,2,3,4,5,6].map(pos => (
                       <span key={pos} className={gameState.codeDigits[pos] ? 'text-green-400' : 'text-gray-600'}>
@@ -201,26 +248,29 @@ export default function Home() {
         <div className="flex flex-col sm:flex-row gap-4 items-center mb-8">
           <button 
             onClick={() => window.location.href = '/game/memory'}
-            className="group relative px-8 py-4 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 rounded-lg font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-green-500/25"
+            className="group relative px-8 py-4 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 rounded-lg font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-red-500/25"
           >
             <span className="relative z-10">
-              {progress.completed === 0 ? '🧪 Gegengift-Mission starten' : '🔄 Mission fortsetzen'}
+              {progress.completed === 0 ? '🐍 Überlebenskampf starten!' : '⚡ Kampf fortsetzen!'}
             </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-green-300 rounded-lg opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-red-400 to-red-300 rounded-lg opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
           </button>
           
           <button 
             onClick={() => setShowOverview(!showOverview)}
             className="px-6 py-3 border border-blue-500 hover:border-blue-300 bg-blue-900/20 hover:bg-blue-800/30 rounded-lg font-medium transition-all duration-300"
           >
-            🎮 Alle Spiele anzeigen
+            🎮 Alle Herausforderungen anzeigen
           </button>
         </div>
 
         {/* Game Overview */}
         {showOverview && (
           <div className="w-full max-w-4xl mx-auto mb-8 bg-black/60 backdrop-blur-sm border border-blue-500/30 rounded-lg p-6">
-            <h3 className="text-2xl font-bold text-center mb-6 text-blue-400">🎮 Herausforderungen Übersicht</h3>
+            <h3 className="text-2xl font-bold text-center mb-6 text-blue-400">⚡ Überlebens-Herausforderungen</h3>
+            <div className="mb-4 text-center text-yellow-300 font-semibold">
+              ALLE 5 Herausforderungen müssen bestanden werden!
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {GAME_CHALLENGES.map((challenge) => {
                 const status = getChallengeStatus(challenge.id);
@@ -249,7 +299,7 @@ export default function Home() {
                         <span className="text-yellow-400">{challenge.difficulty}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Zeit:</span>
+                        <span>Geschätzte Zeit:</span>
                         <span className="text-blue-400">{challenge.estimatedTime}</span>
                       </div>
                       <div className="flex justify-between">
@@ -285,18 +335,18 @@ export default function Home() {
         <div className="mt-12 mb-16 flex items-center space-x-4 text-sm">
           <div className="flex items-center space-x-2">
             <div className={`w-3 h-3 rounded-full animate-pulse ${progress.completed === 5 ? 'bg-green-500' : 'bg-red-500'}`}></div>
-            <span>Dominiks Zustand: {progress.completed === 5 ? 'Geheilt!' : 'Vergiftet'}</span>
+            <span>Dominiks Zustand: {progress.completed === 5 ? 'Gerettet!' : 'Vergiftet'}</span>
           </div>
           <div className="flex items-center space-x-2">
             <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-            <span>Gegengift-Code: {codeDigitsCollected}/6 Ziffern</span>
+            <span>Herausforderungen: {progress.completed}/5 (ALLE ERFORDERLICH)</span>
           </div>
         </div>
 
         {/* Footer */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center text-gray-400 text-sm">
           <p>Ein Junggesellenabschied-Abenteuer für Dominik</p>
-          <p className="mt-1">Viel Glück, Bräutigam! 🎩</p>
+          <p className="mt-1">Überlebe das Venom, Bräutigam! 🐍⚡</p>
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useGame } from '../../context/GameContext';
+import PlayerStatus from '../../components/PlayerStatus';
 
 interface Card {
   id: number;
@@ -133,73 +134,94 @@ export default function MemoryGame() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black text-white p-4">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         
-        {/* Header */}
-        <div className="text-center mb-8">
-          <button 
-            onClick={() => window.location.href = '/'}
-            className="absolute top-4 left-4 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
-          >
-            ← Zurück
-          </button>
+        <div className="flex flex-col lg:flex-row gap-6">
           
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-            🧠 Gedächtnis-Herausforderung
-          </h1>
-          <p className="text-lg text-gray-300">
-            Finde die passenden Gegengift-Zutaten!
-          </p>
-          
-          {isAlreadyCompleted && (
-            <div className="mt-4 bg-green-900/30 border border-green-500 rounded-lg p-3 max-w-md mx-auto">
-              <p className="text-green-400 text-sm">
-                ✅ Bereits abgeschlossen! Ziffer 7 erhalten.
+          {/* Left Side - Player Status */}
+          <div className="lg:w-1/4 w-full">
+            <PlayerStatus 
+              currentGame="Gedächtnis-Test"
+              className="sticky top-4"
+            />
+          </div>
+
+          {/* Right Side - Game Content */}
+          <div className="lg:w-3/4 w-full">
+            
+            {/* Header */}
+            <div className="text-center mb-8">
+              <button 
+                onClick={() => window.location.href = '/'}
+                className="absolute top-4 right-4 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
+              >
+                ← Zurück
+              </button>
+              
+              <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                🧠 Gedächtnis-Herausforderung
+              </h1>
+              <p className="text-lg text-gray-300">
+                Finde die passenden Gegengift-Zutaten!
               </p>
+              
+              {isAlreadyCompleted && (
+                <div className="mt-4 bg-green-900/30 border border-green-500 rounded-lg p-3 max-w-md mx-auto">
+                  <p className="text-green-400 text-sm">
+                    ✅ Bereits abgeschlossen! Ziffer 7 erhalten.
+                  </p>
+                </div>
+              )}
             </div>
-          )}
-        </div>
 
-        {/* Game Stats */}
-        <div className="flex justify-center items-center gap-8 mb-8">
-          <div className="bg-black/30 px-4 py-2 rounded-lg">
-            <span className="text-red-400">⏰ Zeit: {timeLeft}s</span>
-          </div>
-          <div className="bg-black/30 px-4 py-2 rounded-lg">
-            <span className="text-blue-400">🎯 Züge: {moves}</span>
-          </div>
-          <div className="bg-black/30 px-4 py-2 rounded-lg">
-            <span className="text-green-400">✅ Paare: {matchedPairs}/{ANTIDOTE_INGREDIENTS.length}</span>
-          </div>
-        </div>
-
-        {/* Game Board */}
-        <div className="grid grid-cols-4 gap-4 max-w-2xl mx-auto mb-8">
-          {cards.map((card) => (
-            <div
-              key={card.id}
-              onClick={() => handleCardClick(card.id)}
-              className={`
-                aspect-square rounded-lg cursor-pointer transition-all duration-300 transform hover:scale-105
-                ${card.isFlipped || card.isMatched 
-                  ? 'bg-gradient-to-br from-green-500 to-green-600 shadow-lg shadow-green-500/25' 
-                  : 'bg-gradient-to-br from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700'
-                }
-                ${card.isMatched ? 'ring-2 ring-yellow-400' : ''}
-              `}
-            >
-              <div className="w-full h-full flex flex-col items-center justify-center">
-                {card.isFlipped || card.isMatched ? (
-                  <>
-                    <div className="text-3xl mb-1">{card.symbol}</div>
-                    <div className="text-xs text-center px-1">{card.name}</div>
-                  </>
-                ) : (
-                  <div className="text-2xl">❓</div>
-                )}
+            {/* Game Stats */}
+            <div className="flex justify-center items-center gap-8 mb-8">
+              <div className="bg-black/30 px-4 py-2 rounded-lg">
+                <span className="text-red-400">⏰ Zeit: {timeLeft}s</span>
+              </div>
+              <div className="bg-black/30 px-4 py-2 rounded-lg">
+                <span className="text-blue-400">🎯 Züge: {moves}</span>
+              </div>
+              <div className="bg-black/30 px-4 py-2 rounded-lg">
+                <span className="text-green-400">✅ Paare: {matchedPairs}/{ANTIDOTE_INGREDIENTS.length}</span>
               </div>
             </div>
-          ))}
+
+            {/* Game Board */}
+            <div className="grid grid-cols-4 gap-4 max-w-2xl mx-auto mb-8">
+              {cards.map((card) => (
+                <div
+                  key={card.id}
+                  onClick={() => handleCardClick(card.id)}
+                  className={`
+                    aspect-square rounded-lg cursor-pointer transition-all duration-300 transform hover:scale-105
+                    ${card.isFlipped || card.isMatched 
+                      ? 'bg-gradient-to-br from-green-500 to-green-600 shadow-lg shadow-green-500/25' 
+                      : 'bg-gradient-to-br from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700'
+                    }
+                    ${card.isMatched ? 'ring-2 ring-yellow-400' : ''}
+                  `}
+                >
+                  <div className="w-full h-full flex flex-col items-center justify-center">
+                    {card.isFlipped || card.isMatched ? (
+                      <>
+                        <div className="text-3xl mb-1">{card.symbol}</div>
+                        <div className="text-xs text-center px-1">{card.name}</div>
+                      </>
+                    ) : (
+                      <div className="text-2xl">❓</div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Instructions */}
+            <div className="text-center text-gray-400 text-sm">
+              <p>Klicke auf die Karten, um sie umzudrehen und finde die passenden Paare!</p>
+              <p className="mt-2">Jedes Paar repräsentiert eine wichtige Zutat für das Gegengift.</p>
+            </div>
+          </div>
         </div>
 
         {/* Game Won Modal */}
@@ -231,12 +253,6 @@ export default function MemoryGame() {
             </div>
           </div>
         )}
-
-        {/* Instructions */}
-        <div className="text-center text-gray-400 text-sm">
-          <p>Klicke auf die Karten, um sie umzudrehen und finde die passenden Paare!</p>
-          <p className="mt-2">Jedes Paar repräsentiert eine wichtige Zutat für das Gegengift.</p>
-        </div>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useGame } from '../../context/GameContext';
+import PlayerStatus from '../../components/PlayerStatus';
 
 type Board = number[][];
 type Direction = 'up' | 'down' | 'left' | 'right';
@@ -279,13 +280,13 @@ export default function PuzzleGame() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-black text-white p-4">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         
         {/* Header */}
         <div className="text-center mb-8">
           <button 
             onClick={() => window.location.href = '/'}
-            className="absolute top-4 left-4 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
+            className="absolute top-4 right-4 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
           >
             ← Zurück
           </button>
@@ -308,26 +309,36 @@ export default function PuzzleGame() {
 
         <div className="flex flex-col lg:flex-row gap-8 items-start">
           
-          {/* Left Side - Progress Gauge */}
-          <div className="lg:w-1/3 w-full">
-            <div className="bg-black/40 border border-blue-500/30 rounded-lg p-6 sticky top-4">
-              <h3 className="text-xl font-bold text-center mb-6 text-blue-400">🎯 Fortschritt</h3>
+          {/* Left Side - Player Status */}
+          <div className="lg:w-1/4 w-full">
+            <PlayerStatus 
+              currentGame="Formel-Synthese"
+              className="sticky top-4"
+            />
+          </div>
+
+          {/* Right Side - Game Content */}
+          <div className="lg:w-3/4 w-full">
+            
+            {/* Game Progress */}
+            <div className="mb-6 bg-black/40 border border-blue-500/30 rounded-lg p-4">
+              <h3 className="text-lg font-bold text-center mb-4 text-blue-400">🎯 Synthese-Fortschritt</h3>
               
-              {/* Timer */}
-              <div className="mb-6 text-center">
-                <div className={`text-3xl font-mono ${timeLeft < 30 ? 'text-red-400' : 'text-green-400'}`}>
+              {/* Game Timer */}
+              <div className="mb-4 text-center">
+                <div className={`text-2xl font-mono ${timeLeft < 30 ? 'text-red-400' : 'text-green-400'}`}>
                   {formatTime(timeLeft)}
                 </div>
-                <div className="text-sm text-gray-400">Zeit verbleibend</div>
+                <div className="text-sm text-gray-400">Verbleibende Zeit</div>
               </div>
 
               {/* Main Progress Bar */}
-              <div className="mb-6">
+              <div className="mb-4">
                 <div className="flex justify-between text-sm mb-2">
                   <span>Ziel: {WIN_POINTS} Punkte</span>
                   <span className="text-green-400">{score}/{WIN_POINTS}</span>
                 </div>
-                <div className="w-full bg-gray-700 rounded-full h-4 overflow-hidden">
+                <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
                   <div 
                     className="h-full bg-gradient-to-r from-blue-500 to-green-500 transition-all duration-500 ease-out"
                     style={{ width: `${getProgressPercentage()}%` }}
@@ -341,12 +352,12 @@ export default function PuzzleGame() {
               </div>
 
               {/* Bonus Progress Bar */}
-              <div className="mb-6">
+              <div className="mb-4">
                 <div className="flex justify-between text-sm mb-2">
                   <span>Bonus: {BONUS_POINTS} Punkte</span>
                   <span className="text-yellow-400">{Math.max(0, score - WIN_POINTS)}/{BONUS_POINTS - WIN_POINTS}</span>
                 </div>
-                <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
+                <div className="w-full bg-gray-700 rounded-full h-2 overflow-hidden">
                   <div 
                     className="h-full bg-gradient-to-r from-yellow-500 to-orange-500 transition-all duration-500 ease-out"
                     style={{ width: `${getBonusProgressPercentage()}%` }}
@@ -354,43 +365,29 @@ export default function PuzzleGame() {
                 </div>
                 {timeBonus && (
                   <div className="text-center mt-2 text-yellow-400 font-bold">
-                    ⏰ +60s Bonus Zeit!
+                    ⏰ +60s Bonus Zeit erhalten!
                   </div>
                 )}
               </div>
 
               {/* Stats */}
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span>Aktuelle Punkte:</span>
-                  <span className="text-yellow-400 font-bold">{score}</span>
+              <div className="grid grid-cols-3 gap-4 text-center text-sm">
+                <div>
+                  <div className="text-yellow-400 font-bold">{score}</div>
+                  <div className="text-gray-400">Punkte</div>
                 </div>
-                <div className="flex justify-between">
-                  <span>Züge:</span>
-                  <span className="text-blue-400">{moves}</span>
+                <div>
+                  <div className="text-blue-400 font-bold">{moves}</div>
+                  <div className="text-gray-400">Züge</div>
                 </div>
-                <div className="flex justify-between">
-                  <span>Status:</span>
-                  <span className={score >= WIN_POINTS ? 'text-green-400' : 'text-orange-400'}>
-                    {score >= WIN_POINTS ? 'Erfolgreich!' : 'In Arbeit...'}
-                  </span>
-                </div>
-              </div>
-
-              {/* Tips */}
-              <div className="mt-6 p-3 bg-blue-900/30 rounded-lg">
-                <div className="text-sm text-blue-300">
-                  <div className="font-semibold mb-1">💡 Tipps:</div>
-                  <div>• Kombiniere gleiche Zahlen</div>
-                  <div>• Halte eine Ecke frei</div>
-                  <div>• Bei {BONUS_POINTS} Punkten: +60s Zeit!</div>
+                <div>
+                  <div className={score >= WIN_POINTS ? 'text-green-400' : 'text-orange-400'}>
+                    {score >= WIN_POINTS ? '✅' : '⏳'}
+                  </div>
+                  <div className="text-gray-400">Status</div>
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Right Side - Game */}
-          <div className="lg:w-2/3 w-full">
             
             {/* Game Board */}
             <div className="bg-gray-800 p-4 rounded-lg mb-8 max-w-md mx-auto">
