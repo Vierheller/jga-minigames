@@ -1,0 +1,43 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 🧪 Giftcode – The Antidote Puzzle
+
+## 🎯 Objective
+The groom has been symbolically poisoned. To obtain the antidote, he must solve a series of riddles and mini-games to uncover a 6-digit gift code.
+
+## ⏱️ Total Duration
+Approximately 10-15 minutes, divided into:
+- Introduction and instructions: 1 minute
+- Riddles and mini-games: 10 minutes
+- Code entry and conclusion: 2 minutes
+
+## 🕹️ Game Mechanics
+
+1. **Riddle Phase:**
+   - The groom is presented with a series of riddles.
+   - Each solved riddle unlocks the mini-game.
+
+2. **Mini-Game Phase:**
+   - Successfully completing each mini-game provides a hint or digit for the gift code.
+   - Failure may result in a penalty, such as spinning the Wheel of Misfortune.
+
+3. **Code Entry:**
+   - After completing all riddles and mini-games, the groom enters the 6-digit gift code.
+   - A correct entry grants him the symbolic antidote.
+   - An incorrect entry may lead to an additional penalty.
+
+## 🎮 Example Mini-Games
+
+- **Memory Game:** Tests the player's memory skills.
+- **2048:** A numerical puzzle requiring strategic thinking.
+- **Maze Game:** Navigate through a labyrinth to find the exit.
+
+## 🛠️ Technical Implementation
+
+- **Frontend:** HTML/CSS/JavaScript for the user interface and embedding mini-games. We are using nextjs and tailwind.
+- **Backend (optional):** A simple server (e.g., Python Flask or Node.js) to manage game state and code entry. I only want a backend if not otherwise possible.
+- **Hosting:** Local server or web hosting in GitHub pages.
+- **Internationalization**: The groom is german. The game is only in german.
