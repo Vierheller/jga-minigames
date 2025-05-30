@@ -54,9 +54,20 @@ export default function PlayerStatus({ currentGame, className = '' }: PlayerStat
 
   const getHeartRate = () => {
     const baseRate = 70;
-    const stressMultiplier = Math.max(1, (15 * 60 - timeLeft) / 60); // Increases over time
-    const timeStress = timeLeft < 300 ? 2 : timeLeft < 600 ? 1.5 : 1;
-    return Math.round(baseRate * stressMultiplier * timeStress);
+    const totalTime = 15 * 60; // 15 minutes total
+    const elapsed = totalTime - timeLeft;
+    
+    // Calculate stress based on time elapsed (0 to 1)
+    const timeProgress = Math.min(elapsed / totalTime, 1);
+    
+    // Additional stress multiplier for critical time periods
+    const criticalStress = timeLeft < 180 ? 1.8 : timeLeft < 300 ? 1.4 : timeLeft < 600 ? 1.2 : 1;
+    
+    // Calculate final heart rate with a reasonable cap
+    const stressRate = baseRate + (timeProgress * 80); // Base 70 + up to 80 = 150 max from time
+    const finalRate = Math.round(stressRate * criticalStress); // Apply critical multiplier
+    
+    return Math.min(finalRate, 200); // Cap at 200 BPM
   };
 
   return (
@@ -69,7 +80,7 @@ export default function PlayerStatus({ currentGame, className = '' }: PlayerStat
 
       {/* Critical Timer */}
       <div className={`text-center mb-4 p-3 rounded-lg border-2 ${timeLeft < 300 ? 'border-red-500 bg-red-900/30' : 'border-orange-500 bg-orange-900/20'}`}>
-        <div className="text-xs text-gray-300 mb-1">⏰ ZEIT BIS VENOM-TOD</div>
+        <div className="text-xs text-gray-300 mb-1">⏰ ZEIT BIS ALLERGIE-TOD</div>
         <div className={`text-3xl font-mono font-bold transition-all duration-300 ${getTimeColor()} ${pulseEffect ? 'scale-110' : 'scale-100'}`}>
           {formatTime(timeLeft)}
         </div>
@@ -81,7 +92,7 @@ export default function PlayerStatus({ currentGame, className = '' }: PlayerStat
       {/* Venom Level */}
       <div className="mb-4">
         <div className="flex justify-between text-xs mb-1">
-          <span className="text-gray-300">Venom-Level:</span>
+          <span className="text-gray-300">Allergie-Level:</span>
           <span className="text-red-400">{Math.round(getVenomLevel())}%</span>
         </div>
         <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
@@ -136,7 +147,7 @@ export default function PlayerStatus({ currentGame, className = '' }: PlayerStat
 
       {/* Code Progress */}
       <div className="mb-4">
-        <div className="text-xs text-gray-300 mb-2 text-center">💉 Gegengift-Code:</div>
+        <div className="text-xs text-gray-300 mb-2 text-center">💉 Antiallergikum-Code:</div>
         <div className="text-center font-mono text-lg bg-gray-800 rounded p-2">
           {[1,2,3,4,5,6].map(pos => (
             <span key={pos} className={gameState.codeDigits[pos] ? 'text-green-400' : 'text-gray-600'}>

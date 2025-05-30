@@ -513,7 +513,7 @@ export default function HeartRhythmGame() {
           </p>
           <div className="bg-red-900/30 border border-red-500 rounded-lg p-3 max-w-md mx-auto mb-4">
             <p className="text-sm text-red-200 text-center">
-              ⚠️ <strong>KRITISCH:</strong> Das Gift beeinflusst den Herzrhythmus!
+              ⚠️ <strong>KRITISCH:</strong> Die Allergie beeinflusst den Herzrhythmus!
             </p>
             <p className="text-xs text-red-300 text-center mt-2">
               Drücke LEERTASTE im perfekten Takt um das Herz zu stabilisieren
@@ -597,7 +597,7 @@ export default function HeartRhythmGame() {
                   <div className="text-6xl mb-4 animate-pulse">💓</div>
                   <h2 className="text-2xl font-bold mb-4">Herzrhythmus-Stabilisierung</h2>
                   <p className="text-gray-300 text-center mb-6 max-w-md">
-                    Das Gift verursacht gefährliche Herzrhythmusstörungen! 
+                    Die Allergie verursacht gefährliche Herzrhythmusstörungen! 
                     Drücke die LEERTASTE im perfekten Takt, um Dominiks Herz zu stabilisieren.
                   </p>
                   <div className="mb-6 text-center">
@@ -676,7 +676,7 @@ export default function HeartRhythmGame() {
               <div className="text-6xl mb-4">💚</div>
               <h2 className="text-2xl font-bold mb-4">Herz stabilisiert!</h2>
               <p className="mb-4">
-                Dominiks Herzrhythmus ist wieder stabil! Das Gift kann seinem Herzen nichts mehr anhaben.
+                Dominiks Herzrhythmus ist wieder stabil! Die Allergie kann seinem Herzen nichts mehr anhaben.
               </p>
               <div className="bg-black/20 rounded-lg p-4 mb-6">
                 <div className="text-lg font-semibold mb-2 text-yellow-200">Code-Ziffer erhalten: 2</div>
@@ -707,7 +707,7 @@ export default function HeartRhythmGame() {
               <div className="text-6xl mb-4">💔</div>
               <h2 className="text-2xl font-bold mb-4">Herzstillstand!</h2>
               <p className="mb-6">
-                Dominiks Herz ist zum Stillstand gekommen. Das Gift hat gewonnen... 
+                Dominiks Herz ist zum Stillstand gekommen. Die Allergie hat gewonnen... 
                 Versuche es nochmal und halte den Rhythmus!
               </p>
               <button 

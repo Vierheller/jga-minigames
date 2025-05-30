@@ -55,7 +55,7 @@ export default function MemoryGame() {
       return () => clearTimeout(timer);
     } else if (timeLeft === 0) {
       // Game over
-      alert('Zeit abgelaufen! Das Gift wirkt stärker... 💀');
+      alert('Zeit abgelaufen! Die Allergie wirkt stärker... 💀');
     }
   }, [timeLeft, gameStarted, gameWon]);
 
@@ -162,7 +162,7 @@ export default function MemoryGame() {
                 🧠 Gedächtnis-Herausforderung
               </h1>
               <p className="text-lg text-gray-300">
-                Finde die passenden Gegengift-Zutaten!
+                Finde die passenden Antiallergikum-Zutaten!
               </p>
               
               {isAlreadyCompleted && (
@@ -219,7 +219,7 @@ export default function MemoryGame() {
             {/* Instructions */}
             <div className="text-center text-gray-400 text-sm">
               <p>Klicke auf die Karten, um sie umzudrehen und finde die passenden Paare!</p>
-              <p className="mt-2">Jedes Paar repräsentiert eine wichtige Zutat für das Gegengift.</p>
+              <p className="mt-2">Jedes Paar repräsentiert eine wichtige Zutat für das Antiallergikum.</p>
             </div>
           </div>
         </div>
@@ -231,7 +231,7 @@ export default function MemoryGame() {
               <div className="text-6xl mb-4">🎉</div>
               <h2 className="text-2xl font-bold mb-4">Zutat gefunden!</h2>
               <p className="mb-4">
-                Dominik hat erfolgreich alle Gegengift-Zutaten gesammelt!
+                Dominik hat erfolgreich alle Antiallergikum-Zutaten gesammelt!
               </p>
               <p className="text-lg font-semibold mb-6 text-yellow-200">
                 Erste Ziffer des Codes: <span className="text-3xl">7</span>

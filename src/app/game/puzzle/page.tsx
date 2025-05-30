@@ -476,7 +476,7 @@ export default function PuzzleGame() {
           <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
             <div className="bg-gradient-to-br from-red-600 to-red-700 p-8 rounded-lg text-center max-w-md mx-4">
               <div className="text-6xl mb-4">💀</div>
-              <h2 className="text-2xl font-bold mb-4">Zeit abgelaufen!</h2>
+              <h2 className="text-2xl font-bold mb-4">Game Over!</h2>
               <p className="mb-6">
                 Das Experiment ist fehlgeschlagen. Du hattest {score} von {WIN_POINTS} benötigten Punkten.
               </p>

@@ -7,7 +7,7 @@ const GAME_CHALLENGES = [
   {
     id: 'memory',
     title: '🧠 Gedächtnis-Herausforderung',
-    description: 'Finde die passenden Gegengift-Zutaten',
+    description: 'Finde die passenden Antiallergikum-Zutaten',
     difficulty: 'Leicht',
     estimatedTime: '2-3 Min',
     digit: '7',
@@ -27,7 +27,7 @@ const GAME_CHALLENGES = [
   {
     id: 'maze',
     title: '🌀 Labyrinth-Flucht',
-    description: 'Navigiere durch das Giftlabor',
+    description: 'Navigiere durch das Allergie-Labor',
     difficulty: 'Mittel',
     estimatedTime: '2-4 Min',
     digit: '9',
@@ -57,7 +57,7 @@ const GAME_CHALLENGES = [
   {
     id: 'final',
     title: '💉 Finale Code-Eingabe',
-    description: 'Gib den vollständigen Giftcode ein',
+    description: 'Gib den vollständigen Code ein',
     difficulty: 'Final',
     estimatedTime: '1-2 Min',
     digit: '??',
@@ -155,11 +155,11 @@ export default function Home() {
 
         {/* Main Title */}
         <h1 className="text-5xl md:text-7xl font-bold text-center mb-6 bg-gradient-to-r from-red-400 via-red-500 to-red-600 bg-clip-text text-transparent">
-          GIFTCODE
+          GIFTORDEN
         </h1>
         
         <h2 className="text-2xl md:text-3xl font-semibold text-center mb-8 text-green-400">
-          Das Gegengift-Rennen
+          Das Antiallergikum-Rennen
         </h2>
 
         {/* Countdown Timer */}
@@ -181,13 +181,13 @@ export default function Home() {
             </p>
             
             <p className="text-lg leading-relaxed">
-              <span className="font-bold text-white">Dominik</span> wurde von einer giftigen Schlange gebissen! 
-              Das Venom breitet sich schnell aus und er hat nur noch <span className="font-bold text-red-400">15 Minuten</span> Zeit.
+              <span className="font-bold text-white">Dominik</span> hat ausversehen Nüsse gegessen! 
+              Die Allergie breitet sich schnell aus und er hat nur noch <span className="font-bold text-red-400">15 Minuten</span> Zeit.
             </p>
             
             <p className="text-lg leading-relaxed">
-              Um das lebensrettende Gegengift zu erhalten, muss er <span className="font-bold text-green-400">ALLE 5 Herausforderungen</span> bestehen 
-              und den <span className="font-bold text-yellow-400">6-stelligen Giftcode</span> entschlüsseln.
+              Um das lebensrettende Antiallergikum zu erhalten, muss er <span className="font-bold text-green-400">ALLE 6 Herausforderungen</span> bestehen,
+              um den <span className="font-bold text-yellow-400">6-stelligen Code</span> zu entschlüsseln.
             </p>
 
             <div className="bg-blue-900/30 border border-blue-500 rounded p-4 mt-6">
@@ -201,10 +201,10 @@ export default function Home() {
             
             <div className="bg-red-900/30 border border-red-500 rounded p-4 mt-4">
               <p className="text-sm text-red-200">
-                ⚠️ <strong>Warnung:</strong> Nur wer ALLE Herausforderungen besteht, erhält das vollständige Gegengift!
+                ⚠️ <strong>Warnung:</strong> Nur wer ALLE Herausforderungen besteht, erhält das vollständige Antiallergikum!
               </p>
               <p className="text-sm text-red-200 mt-2">
-                💀 <strong>Fehlschlag bedeutet:</strong> Das Venom gewinnt...
+                💀 <strong>Fehlschlag bedeutet:</strong> Die Allergie gewinnt...
               </p>
             </div>
           </div>
@@ -369,7 +369,6 @@ export default function Home() {
         {/* Footer */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center text-gray-400 text-sm">
           <p>Ein Junggesellenabschied-Abenteuer für Dominik</p>
-          <p className="mt-1">Überlebe das Venom, Bräutigam! 🐍⚡</p>
         </div>
       </div>
     </div>

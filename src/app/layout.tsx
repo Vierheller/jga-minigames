@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Giftcode - Das Gegengift-Rätsel",
+  title: "Giftorden - Das Antiallergikum-Rätsel",
   description: "Ein Junggesellenabschied-Abenteuer für Dominik",
 };
 

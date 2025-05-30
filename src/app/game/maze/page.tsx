@@ -491,7 +491,7 @@ export default function MazeGame() {
             🌀 Labor-Flucht
           </h1>
           <p className="text-lg text-gray-300 mb-4">
-            Navigiere durch das Giftlabor und erreiche den Ausgang!
+            Navigiere durch das Allergie-Labor und erreiche den Ausgang!
           </p>
           <div className="bg-blue-900/30 border border-blue-500 rounded-lg p-3 max-w-md mx-auto mb-4">
             <p className="text-sm text-blue-200 text-center">
@@ -655,7 +655,7 @@ export default function MazeGame() {
               <div className="text-6xl mb-4">🎉</div>
               <h2 className="text-2xl font-bold mb-4">Labor verlassen!</h2>
               <p className="mb-4">
-                Dominik hat erfolgreich das Giftlabor durchquert und den Ausgang erreicht!
+                Dominik hat erfolgreich das Allergie-Labor durchquert und den Ausgang erreicht!
               </p>
               <p className="text-lg font-semibold mb-6 text-yellow-200">
                 Dritte Ziffer des Codes: <span className="text-3xl">9</span>
@@ -686,7 +686,7 @@ export default function MazeGame() {
               <h2 className="text-2xl font-bold mb-4">Explosion!</h2>
               <p className="mb-6">
                 {timeLeft === 0 
-                  ? 'Die Zeit ist abgelaufen! Das Venom wirkt stärker...' 
+                  ? 'Die Zeit ist abgelaufen! Die Allergie wirkt stärker...' 
                   : 'Dominik wurde von einer Explosion erfasst! Das Labor ist gefährlich...'}
               </p>
               <button 
