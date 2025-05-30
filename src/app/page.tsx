@@ -262,6 +262,16 @@ export default function Home() {
           >
             🎮 Alle Herausforderungen anzeigen
           </button>
+
+          {/* Bonus Ambulance Game */}
+          {progress.completed > 0 && (
+            <button 
+              onClick={() => window.location.href = '/game/ambulance'}
+              className="px-6 py-3 border border-orange-500 hover:border-orange-300 bg-orange-900/20 hover:bg-orange-800/30 rounded-lg font-medium transition-all duration-300"
+            >
+              🚨 BONUS: Krankenwagen-Fahrt
+            </button>
+          )}
         </div>
 
         {/* Game Overview */}
