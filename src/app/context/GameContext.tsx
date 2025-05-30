@@ -7,6 +7,8 @@ interface GameState {
   codeDigits: { [key: number]: string };
   currentChallenge: number;
   playerName: string;
+  timeLeft: number;
+  gameStartTime: number;
 }
 
 interface GameContextType {
@@ -15,6 +17,8 @@ interface GameContextType {
   resetGame: () => void;
   isChallengeLocked: (challengeId: string) => boolean;
   getProgress: () => { completed: number; total: number };
+  timeLeft: number;
+  addTimeBonus: (seconds: number) => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -32,15 +36,20 @@ const initialState: GameState = {
   completedChallenges: [],
   codeDigits: {},
   currentChallenge: 0,
-  playerName: 'Dominik'
+  playerName: 'Dominik',
+  timeLeft: 0,
+  gameStartTime: 0
 };
 
 export function GameProvider({ children }: { children: React.ReactNode }) {
   const [gameState, setGameState] = useState<GameState>(initialState);
+  const [timeLeft, setTimeLeft] = useState(15 * 60); // 15 minutes
 
   // Load state from localStorage on mount
   useEffect(() => {
     const savedState = localStorage.getItem('dominik-antidote-game');
+    const savedTime = localStorage.getItem('dominik-venom-timer');
+    
     if (savedState) {
       try {
         const parsed = JSON.parse(savedState);
@@ -49,12 +58,28 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         console.error('Error loading game state:', error);
       }
     }
+    
+    if (savedTime) {
+      setTimeLeft(parseInt(savedTime));
+    }
   }, []);
 
   // Save state to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('dominik-antidote-game', JSON.stringify(gameState));
   }, [gameState]);
+
+  // Global countdown timer
+  useEffect(() => {
+    if (timeLeft > 0 && getProgress().completed < CHALLENGES.length) {
+      const timer = setTimeout(() => {
+        const newTime = timeLeft - 1;
+        setTimeLeft(newTime);
+        localStorage.setItem('dominik-venom-timer', newTime.toString());
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [timeLeft]);
 
   const completeChallenge = (challengeId: string, digit: string, position: number) => {
     setGameState(prev => {
@@ -78,7 +103,9 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
 
   const resetGame = () => {
     setGameState(initialState);
+    setTimeLeft(15 * 60); // Reset to 15 minutes
     localStorage.removeItem('dominik-antidote-game');
+    localStorage.removeItem('dominik-venom-timer');
   };
 
   const isChallengeLocked = (challengeId: string): boolean => {
@@ -98,13 +125,23 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     total: CHALLENGES.length
   });
 
+  const addTimeBonus = (seconds: number) => {
+    setTimeLeft(prev => {
+      const newTime = prev + seconds;
+      localStorage.setItem('dominik-venom-timer', newTime.toString());
+      return newTime;
+    });
+  };
+
   return (
     <GameContext.Provider value={{
       gameState,
       completeChallenge,
       resetGame,
       isChallengeLocked,
-      getProgress
+      getProgress,
+      timeLeft,
+      addTimeBonus
     }}>
       {children}
     </GameContext.Provider>

@@ -20,10 +20,9 @@ export default function PuzzleGame() {
   const [gameOver, setGameOver] = useState(false);
   const [moves, setMoves] = useState(0);
   const [timeBonus, setTimeBonus] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(180); // 3 minutes base time
   const [gameStarted, setGameStarted] = useState(false);
 
-  const { gameState, completeChallenge, isChallengeLocked } = useGame();
+  const { gameState, completeChallenge, isChallengeLocked, addTimeBonus, timeLeft } = useGame();
   const isAlreadyCompleted = gameState.completedChallenges.includes('puzzle');
   const isLocked = isChallengeLocked('puzzle');
 
@@ -58,16 +57,6 @@ export default function PuzzleGame() {
       setBoard(initializeBoard());
     }
   }, [initializeBoard, isLocked]);
-
-  // Timer
-  useEffect(() => {
-    if (gameStarted && timeLeft > 0 && !gameWon && !gameOver) {
-      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-      return () => clearTimeout(timer);
-    } else if (timeLeft === 0 && !gameWon) {
-      setGameOver(true);
-    }
-  }, [timeLeft, gameStarted, gameWon, gameOver]);
 
   // Move tiles in specified direction
   const moveTiles = (board: Board, direction: Direction): { newBoard: Board; scoreGained: number; moved: boolean } => {
@@ -172,7 +161,7 @@ export default function PuzzleGame() {
       // Check for bonus time at 3000 points
       if (newScore >= BONUS_POINTS && !timeBonus) {
         setTimeBonus(true);
-        setTimeLeft(prev => prev + 60); // Add 1 minute bonus
+        addTimeBonus(60); // Add 1 minute bonus
       }
 
       // Check win condition at 2000 points
@@ -221,7 +210,6 @@ export default function PuzzleGame() {
     setGameOver(false);
     setMoves(0);
     setTimeBonus(false);
-    setTimeLeft(180);
     setGameStarted(false);
   };
 

@@ -58,7 +58,7 @@ export default function AmbulanceGame() {
   const ambulanceElementRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
 
-  const { gameState } = useGame();
+  const { gameState, addTimeBonus } = useGame();
   const isLocked = gameState.completedChallenges.length === 0; // Ambulance unlocked after first challenge
 
   // Game constants
@@ -349,6 +349,7 @@ export default function AmbulanceGame() {
           if (collectible.type === 'speed') {
             setSpeed(s => Math.min(MAX_SPEED, s + 10));
           } else if (collectible.type === 'time') {
+            addTimeBonus(15);
             setTimeBonus(t => t + 15);
           }
           setScore(s => s + 100);
@@ -375,7 +376,7 @@ export default function AmbulanceGame() {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [gameStarted, gameOver, gameWon, speed, phase, checkCollision, spawnObstacle, spawnCollectible]);
+  }, [gameStarted, gameOver, gameWon, speed, phase, checkCollision, spawnObstacle, spawnCollectible, addTimeBonus]);
 
   // Focus game on mount
   useEffect(() => {
@@ -519,7 +520,7 @@ export default function AmbulanceGame() {
                   <div className="text-gray-400">Strecke</div>
                 </div>
                 <div>
-                  <div className="text-purple-400 font-bold">+{timeBonus}s</div>
+                  <div className="text-purple-400 font-bold">{timeBonus}s</div>
                   <div className="text-gray-400">Zeitbonus</div>
                 </div>
               </div>

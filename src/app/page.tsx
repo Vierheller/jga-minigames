@@ -70,8 +70,7 @@ export default function Home() {
   const [showContent, setShowContent] = useState(false);
   const [pulseEffect, setPulseEffect] = useState(false);
   const [showOverview, setShowOverview] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(15 * 60); // 15 minutes in seconds
-  const { gameState, getProgress, isChallengeLocked } = useGame();
+  const { gameState, getProgress, isChallengeLocked, timeLeft, resetGame } = useGame();
 
   useEffect(() => {
     const timer = setTimeout(() => setShowContent(true), 500);
@@ -85,14 +84,6 @@ export default function Home() {
       clearInterval(pulseTimer);
     };
   }, []);
-
-  // Global countdown timer
-  useEffect(() => {
-    if (timeLeft > 0 && getProgress().completed < 5) {
-      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [timeLeft, getProgress]);
 
   const progress = getProgress();
   const codeDigitsCollected = Object.keys(gameState.codeDigits).length;
@@ -282,6 +273,18 @@ export default function Home() {
               🚨 BONUS: Krankenwagen-Fahrt
             </button>
           )}
+
+          {/* Reset Game Button */}
+          <button 
+            onClick={() => {
+              if (confirm('Möchtest du das gesamte Spiel zurücksetzen? Aller Fortschritt geht verloren!')) {
+                resetGame();
+              }
+            }}
+            className="px-6 py-3 border border-gray-500 hover:border-gray-300 bg-gray-900/20 hover:bg-gray-800/30 rounded-lg font-medium transition-all duration-300 text-gray-300 hover:text-white"
+          >
+            🔄 Spiel zurücksetzen
+          </button>
         </div>
 
         {/* Game Overview */}

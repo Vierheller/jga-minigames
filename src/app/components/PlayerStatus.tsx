@@ -9,28 +9,8 @@ interface PlayerStatusProps {
 }
 
 export default function PlayerStatus({ currentGame, className = '' }: PlayerStatusProps) {
-  const [timeLeft, setTimeLeft] = useState(15 * 60); // 15 minutes
   const [pulseEffect, setPulseEffect] = useState(false);
-  const { gameState, getProgress } = useGame();
-
-  // Global countdown timer
-  useEffect(() => {
-    const savedTime = localStorage.getItem('dominik-venom-timer');
-    if (savedTime) {
-      setTimeLeft(parseInt(savedTime));
-    }
-  }, []);
-
-  useEffect(() => {
-    if (timeLeft > 0 && getProgress().completed < 5) {
-      const timer = setTimeout(() => {
-        const newTime = timeLeft - 1;
-        setTimeLeft(newTime);
-        localStorage.setItem('dominik-venom-timer', newTime.toString());
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [timeLeft, getProgress]);
+  const { gameState, getProgress, timeLeft } = useGame();
 
   // Pulse effect for critical time
   useEffect(() => {
