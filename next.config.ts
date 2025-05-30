@@ -13,8 +13,8 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   // GitHub Pages deployment configuration
-  basePath: process.env.NODE_ENV === 'production' ? '/minigames' : '',
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/minigames/' : '',
+  basePath: process.env.NODE_ENV === 'production' ? '/jga-minigames' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/jga-minigames/' : '',
 };
 
 export default nextConfig;
