@@ -7,7 +7,8 @@ type Board = number[][];
 type Direction = 'up' | 'down' | 'left' | 'right';
 
 const GRID_SIZE = 4;
-const WIN_TILE = 2048;
+const WIN_POINTS = 2000;
+const BONUS_POINTS = 3000;
 
 export default function PuzzleGame() {
   const [board, setBoard] = useState<Board>(() => 
@@ -17,6 +18,9 @@ export default function PuzzleGame() {
   const [gameWon, setGameWon] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [moves, setMoves] = useState(0);
+  const [timeBonus, setTimeBonus] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(180); // 3 minutes base time
+  const [gameStarted, setGameStarted] = useState(false);
 
   const { gameState, completeChallenge, isChallengeLocked } = useGame();
   const isAlreadyCompleted = gameState.completedChallenges.includes('puzzle');
@@ -53,6 +57,16 @@ export default function PuzzleGame() {
       setBoard(initializeBoard());
     }
   }, [initializeBoard, isLocked]);
+
+  // Timer
+  useEffect(() => {
+    if (gameStarted && timeLeft > 0 && !gameWon && !gameOver) {
+      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+      return () => clearTimeout(timer);
+    } else if (timeLeft === 0 && !gameWon) {
+      setGameOver(true);
+    }
+  }, [timeLeft, gameStarted, gameWon, gameOver]);
 
   // Move tiles in specified direction
   const moveTiles = (board: Board, direction: Direction): { newBoard: Board; scoreGained: number; moved: boolean } => {
@@ -139,29 +153,29 @@ export default function PuzzleGame() {
     return true;
   };
 
-  // Check for win condition
-  const checkWin = (board: Board): boolean => {
-    for (let i = 0; i < GRID_SIZE; i++) {
-      for (let j = 0; j < GRID_SIZE; j++) {
-        if (board[i][j] === WIN_TILE) return true;
-      }
-    }
-    return false;
-  };
-
   // Handle move
   const handleMove = (direction: Direction) => {
     if (gameWon || gameOver) return;
+
+    if (!gameStarted) setGameStarted(true);
 
     const { newBoard, scoreGained, moved } = moveTiles(board, direction);
     
     if (moved) {
       addRandomTile(newBoard);
       setBoard(newBoard);
-      setScore(prev => prev + scoreGained);
+      const newScore = score + scoreGained;
+      setScore(newScore);
       setMoves(prev => prev + 1);
 
-      if (checkWin(newBoard) && !isAlreadyCompleted) {
+      // Check for bonus time at 3000 points
+      if (newScore >= BONUS_POINTS && !timeBonus) {
+        setTimeBonus(true);
+        setTimeLeft(prev => prev + 60); // Add 1 minute bonus
+      }
+
+      // Check win condition at 2000 points
+      if (newScore >= WIN_POINTS && !isAlreadyCompleted && !gameWon) {
         setGameWon(true);
         completeChallenge('puzzle', '3', 2);
       } else if (isGameOver(newBoard)) {
@@ -205,6 +219,9 @@ export default function PuzzleGame() {
     setGameWon(false);
     setGameOver(false);
     setMoves(0);
+    setTimeBonus(false);
+    setTimeLeft(180);
+    setGameStarted(false);
   };
 
   const getTileColor = (value: number): string => {
@@ -223,6 +240,21 @@ export default function PuzzleGame() {
       2048: 'bg-yellow-500',
     };
     return colors[value] || 'bg-green-500';
+  };
+
+  const getProgressPercentage = () => {
+    return Math.min((score / WIN_POINTS) * 100, 100);
+  };
+
+  const getBonusProgressPercentage = () => {
+    if (score < WIN_POINTS) return 0;
+    return Math.min(((score - WIN_POINTS) / (BONUS_POINTS - WIN_POINTS)) * 100, 100);
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   if (isLocked) {
@@ -247,7 +279,7 @@ export default function PuzzleGame() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-black text-white p-4">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         
         {/* Header */}
         <div className="text-center mb-8">
@@ -262,7 +294,7 @@ export default function PuzzleGame() {
             🧪 Formel-Puzzle
           </h1>
           <p className="text-lg text-gray-300">
-            Kombiniere die Verbindungen bis zur perfekten Formel (2048)!
+            Sammle {WIN_POINTS} Punkte, um die perfekte Formel zu synthetisieren!
           </p>
           
           {isAlreadyCompleted && (
@@ -274,78 +306,153 @@ export default function PuzzleGame() {
           )}
         </div>
 
-        {/* Game Stats */}
-        <div className="flex justify-center items-center gap-8 mb-8">
-          <div className="bg-black/30 px-4 py-2 rounded-lg">
-            <span className="text-yellow-400">🏆 Punkte: {score}</span>
-          </div>
-          <div className="bg-black/30 px-4 py-2 rounded-lg">
-            <span className="text-blue-400">🎯 Züge: {moves}</span>
-          </div>
-          <div className="bg-black/30 px-4 py-2 rounded-lg">
-            <span className="text-green-400">🎯 Ziel: 2048</span>
-          </div>
-        </div>
-
-        {/* Game Board */}
-        <div className="bg-gray-800 p-4 rounded-lg mb-8 max-w-md mx-auto">
-          <div className="grid grid-cols-4 gap-2">
-            {board.map((row, i) =>
-              row.map((cell, j) => (
-                <div
-                  key={`${i}-${j}`}
-                  className={`
-                    aspect-square rounded-lg flex items-center justify-center font-bold text-lg
-                    ${getTileColor(cell)}
-                    ${cell === 0 ? 'text-gray-500' : 'text-white'}
-                    transition-all duration-200
-                  `}
-                >
-                  {cell !== 0 && cell}
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
+          
+          {/* Left Side - Progress Gauge */}
+          <div className="lg:w-1/3 w-full">
+            <div className="bg-black/40 border border-blue-500/30 rounded-lg p-6 sticky top-4">
+              <h3 className="text-xl font-bold text-center mb-6 text-blue-400">🎯 Fortschritt</h3>
+              
+              {/* Timer */}
+              <div className="mb-6 text-center">
+                <div className={`text-3xl font-mono ${timeLeft < 30 ? 'text-red-400' : 'text-green-400'}`}>
+                  {formatTime(timeLeft)}
                 </div>
-              ))
-            )}
-          </div>
-        </div>
+                <div className="text-sm text-gray-400">Zeit verbleibend</div>
+              </div>
 
-        {/* Controls */}
-        <div className="text-center mb-8">
-          <p className="text-gray-400 mb-4">Verwende die Pfeiltasten oder klicke die Buttons:</p>
-          <div className="grid grid-cols-3 gap-2 max-w-48 mx-auto">
-            <div></div>
-            <button 
-              onClick={() => handleMove('up')}
-              className="bg-gray-700 hover:bg-gray-600 p-3 rounded-lg transition-colors"
-            >
-              ↑
-            </button>
-            <div></div>
-            <button 
-              onClick={() => handleMove('left')}
-              className="bg-gray-700 hover:bg-gray-600 p-3 rounded-lg transition-colors"
-            >
-              ←
-            </button>
-            <button 
-              onClick={resetGame}
-              className="bg-red-600 hover:bg-red-500 p-3 rounded-lg transition-colors text-sm"
-            >
-              Reset
-            </button>
-            <button 
-              onClick={() => handleMove('right')}
-              className="bg-gray-700 hover:bg-gray-600 p-3 rounded-lg transition-colors"
-            >
-              →
-            </button>
-            <div></div>
-            <button 
-              onClick={() => handleMove('down')}
-              className="bg-gray-700 hover:bg-gray-600 p-3 rounded-lg transition-colors"
-            >
-              ↓
-            </button>
-            <div></div>
+              {/* Main Progress Bar */}
+              <div className="mb-6">
+                <div className="flex justify-between text-sm mb-2">
+                  <span>Ziel: {WIN_POINTS} Punkte</span>
+                  <span className="text-green-400">{score}/{WIN_POINTS}</span>
+                </div>
+                <div className="w-full bg-gray-700 rounded-full h-4 overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-blue-500 to-green-500 transition-all duration-500 ease-out"
+                    style={{ width: `${getProgressPercentage()}%` }}
+                  ></div>
+                </div>
+                {score >= WIN_POINTS && (
+                  <div className="text-center mt-2 text-green-400 font-bold">
+                    ✅ Ziel erreicht!
+                  </div>
+                )}
+              </div>
+
+              {/* Bonus Progress Bar */}
+              <div className="mb-6">
+                <div className="flex justify-between text-sm mb-2">
+                  <span>Bonus: {BONUS_POINTS} Punkte</span>
+                  <span className="text-yellow-400">{Math.max(0, score - WIN_POINTS)}/{BONUS_POINTS - WIN_POINTS}</span>
+                </div>
+                <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-yellow-500 to-orange-500 transition-all duration-500 ease-out"
+                    style={{ width: `${getBonusProgressPercentage()}%` }}
+                  ></div>
+                </div>
+                {timeBonus && (
+                  <div className="text-center mt-2 text-yellow-400 font-bold">
+                    ⏰ +60s Bonus Zeit!
+                  </div>
+                )}
+              </div>
+
+              {/* Stats */}
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span>Aktuelle Punkte:</span>
+                  <span className="text-yellow-400 font-bold">{score}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Züge:</span>
+                  <span className="text-blue-400">{moves}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Status:</span>
+                  <span className={score >= WIN_POINTS ? 'text-green-400' : 'text-orange-400'}>
+                    {score >= WIN_POINTS ? 'Erfolgreich!' : 'In Arbeit...'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Tips */}
+              <div className="mt-6 p-3 bg-blue-900/30 rounded-lg">
+                <div className="text-sm text-blue-300">
+                  <div className="font-semibold mb-1">💡 Tipps:</div>
+                  <div>• Kombiniere gleiche Zahlen</div>
+                  <div>• Halte eine Ecke frei</div>
+                  <div>• Bei {BONUS_POINTS} Punkten: +60s Zeit!</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Side - Game */}
+          <div className="lg:w-2/3 w-full">
+            
+            {/* Game Board */}
+            <div className="bg-gray-800 p-4 rounded-lg mb-8 max-w-md mx-auto">
+              <div className="grid grid-cols-4 gap-2">
+                {board.map((row, i) =>
+                  row.map((cell, j) => (
+                    <div
+                      key={`${i}-${j}`}
+                      className={`
+                        aspect-square rounded-lg flex items-center justify-center font-bold text-lg
+                        ${getTileColor(cell)}
+                        ${cell === 0 ? 'text-gray-500' : 'text-white'}
+                        transition-all duration-200
+                      `}
+                    >
+                      {cell !== 0 && cell}
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* Controls */}
+            <div className="text-center mb-8">
+              <p className="text-gray-400 mb-4">Verwende die Pfeiltasten oder klicke die Buttons:</p>
+              <div className="grid grid-cols-3 gap-2 max-w-48 mx-auto">
+                <div></div>
+                <button 
+                  onClick={() => handleMove('up')}
+                  className="bg-gray-700 hover:bg-gray-600 p-3 rounded-lg transition-colors"
+                >
+                  ↑
+                </button>
+                <div></div>
+                <button 
+                  onClick={() => handleMove('left')}
+                  className="bg-gray-700 hover:bg-gray-600 p-3 rounded-lg transition-colors"
+                >
+                  ←
+                </button>
+                <button 
+                  onClick={resetGame}
+                  className="bg-red-600 hover:bg-red-500 p-3 rounded-lg transition-colors text-sm"
+                >
+                  Reset
+                </button>
+                <button 
+                  onClick={() => handleMove('right')}
+                  className="bg-gray-700 hover:bg-gray-600 p-3 rounded-lg transition-colors"
+                >
+                  →
+                </button>
+                <div></div>
+                <button 
+                  onClick={() => handleMove('down')}
+                  className="bg-gray-700 hover:bg-gray-600 p-3 rounded-lg transition-colors"
+                >
+                  ↓
+                </button>
+                <div></div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -356,7 +463,7 @@ export default function PuzzleGame() {
               <div className="text-6xl mb-4">🎉</div>
               <h2 className="text-2xl font-bold mb-4">Perfekte Formel!</h2>
               <p className="mb-4">
-                Dominik hat die 2048-Verbindung erfolgreich synthetisiert!
+                Dominik hat {score} Punkte erreicht und die Formel erfolgreich synthetisiert!
               </p>
               <p className="text-lg font-semibold mb-6 text-yellow-200">
                 Zweite Ziffer des Codes: <span className="text-3xl">3</span>
@@ -384,9 +491,9 @@ export default function PuzzleGame() {
           <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
             <div className="bg-gradient-to-br from-red-600 to-red-700 p-8 rounded-lg text-center max-w-md mx-4">
               <div className="text-6xl mb-4">💀</div>
-              <h2 className="text-2xl font-bold mb-4">Experiment fehlgeschlagen!</h2>
+              <h2 className="text-2xl font-bold mb-4">Zeit abgelaufen!</h2>
               <p className="mb-6">
-                Die Verbindungen sind instabil geworden. Das Gift wirkt stärker...
+                Das Experiment ist fehlgeschlagen. Du hattest {score} von {WIN_POINTS} benötigten Punkten.
               </p>
               <button 
                 onClick={resetGame}
@@ -399,9 +506,9 @@ export default function PuzzleGame() {
         )}
 
         {/* Instructions */}
-        <div className="text-center text-gray-400 text-sm">
+        <div className="text-center text-gray-400 text-sm mt-8">
           <p>Kombiniere gleiche Zahlen, um höhere Verbindungen zu erstellen!</p>
-          <p className="mt-2">Erreiche 2048, um die nächste Code-Ziffer zu erhalten.</p>
+          <p className="mt-2">Erreiche {WIN_POINTS} Punkte, um die nächste Code-Ziffer zu erhalten.</p>
         </div>
       </div>
     </div>
