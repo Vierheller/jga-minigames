@@ -11,7 +11,10 @@ const nextConfig: NextConfig = {
   },
   typescript: {
     ignoreBuildErrors: true,
-  }
+  },
+  // GitHub Pages deployment configuration
+  basePath: process.env.NODE_ENV === 'production' ? '/minigames' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/minigames/' : '',
 };
 
 export default nextConfig;
