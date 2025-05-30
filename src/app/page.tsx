@@ -35,13 +35,23 @@ const GAME_CHALLENGES = [
     route: '/game/maze'
   },
   {
+    id: 'rhythm',
+    title: '💓 Herzrhythmus-Stabilisierung',
+    description: 'Halte Dominiks Herz durch perfektes Timing am Leben',
+    difficulty: 'Schwer',
+    estimatedTime: '1-2 Min',
+    digit: '2',
+    position: 4,
+    route: '/game/rhythm'
+  },
+  {
     id: 'riddle',
     title: '🔍 Rätsel-Kammer',
     description: 'Löse die finalen Geheimnisse',
     difficulty: 'Schwer',
     estimatedTime: '3-5 Min',
     digit: '?',
-    position: 4,
+    position: 5,
     route: '/game/riddle'
   },
   {
@@ -51,7 +61,7 @@ const GAME_CHALLENGES = [
     difficulty: 'Final',
     estimatedTime: '1-2 Min',
     digit: '??',
-    position: 5,
+    position: 6,
     route: '/game/final'
   }
 ];

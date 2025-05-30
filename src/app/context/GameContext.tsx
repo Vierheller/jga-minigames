@@ -23,6 +23,7 @@ const CHALLENGES = [
   'memory',
   'puzzle', 
   'maze',
+  'rhythm',
   'riddle',
   'final'
 ];
