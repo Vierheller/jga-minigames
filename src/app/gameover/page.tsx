@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useGame } from '../context/GameContext';
+import { navigateTo } from '../utils/navigation';
 
 export default function GameOverPage() {
   const [showContent, setShowContent] = useState(false);
@@ -183,7 +184,7 @@ export default function GameOverPage() {
           <button 
             onClick={() => {
               resetGame();
-              window.location.href = '/';
+              navigateTo('/');
             }}
             className="group relative px-8 py-4 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 rounded-lg font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-red-500/25"
           >
@@ -194,7 +195,7 @@ export default function GameOverPage() {
           </button>
           
           <button 
-            onClick={() => window.location.href = '/'}
+            onClick={() => navigateTo('/')}
             className="px-6 py-3 border border-gray-500 hover:border-gray-300 bg-gray-900/20 hover:bg-gray-800/30 rounded-lg font-medium transition-all duration-300"
           >
             🏠 Zum Hauptmenü

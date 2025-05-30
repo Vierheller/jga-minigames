@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useGame } from '../../context/GameContext';
+import { navigateTo } from '../../utils/navigation';
 import PlayerStatus from '../../components/PlayerStatus';
 
 interface Riddle {
@@ -197,7 +198,7 @@ export default function RiddleGame() {
             Schließe zuerst die Herzrhythmus-Stabilisierung ab!
           </p>
           <button 
-            onClick={() => window.location.href = '/'}
+            onClick={() => navigateTo('/')}
             className="px-6 py-3 bg-purple-600 hover:bg-purple-500 rounded-lg font-semibold transition-colors"
           >
             ← Zurück zum Hauptmenü
@@ -214,7 +215,7 @@ export default function RiddleGame() {
         {/* Header */}
         <div className="text-center mb-8">
           <button 
-            onClick={() => window.location.href = '/'}
+            onClick={() => navigateTo('/')}
             className="absolute top-4 right-4 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
           >
             ← Zurück
@@ -411,7 +412,7 @@ export default function RiddleGame() {
               </p>
               <div className="flex gap-4 justify-center">
                 <button 
-                  onClick={() => window.location.href = '/game/final'}
+                  onClick={() => navigateTo('/game/final')}
                   className="px-6 py-3 bg-green-600 hover:bg-green-500 rounded-lg font-semibold transition-colors"
                 >
                   Finale Herausforderung →

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useGame } from './context/GameContext';
+import { navigateTo } from './utils/navigation';
 
 const GAME_CHALLENGES = [
   {
@@ -256,7 +257,7 @@ export default function Home() {
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 items-center mb-8">
           <button 
-            onClick={() => window.location.href = '/game/memory'}
+            onClick={() => navigateTo('/game/memory')}
             className="group relative px-8 py-4 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 rounded-lg font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-red-500/25"
           >
             <span className="relative z-10">
@@ -275,7 +276,7 @@ export default function Home() {
           {/* Bonus Ambulance Game */}
           {progress.completed > 0 && (
             <button 
-              onClick={() => window.location.href = '/game/ambulance'}
+              onClick={() => navigateTo('/game/ambulance')}
               className="px-6 py-3 border border-orange-500 hover:border-orange-300 bg-orange-900/20 hover:bg-orange-800/30 rounded-lg font-medium transition-all duration-300"
             >
               🚨 BONUS: Krankenwagen-Fahrt
@@ -315,7 +316,7 @@ export default function Home() {
                       ${getStatusColor(status)}
                       ${isClickable ? 'hover:scale-105 cursor-pointer' : 'opacity-60 cursor-not-allowed'}
                     `}
-                    onClick={() => isClickable && (window.location.href = challenge.route)}
+                    onClick={() => isClickable && navigateTo(challenge.route)}
                   >
                     <div className="flex items-center justify-between mb-2">
                       <h4 className="font-bold text-lg">{challenge.title}</h4>

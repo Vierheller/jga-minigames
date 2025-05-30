@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useGame } from '../context/GameContext';
+import { navigateTo } from '../utils/navigation';
 
 interface PlayerStatusProps {
   currentGame?: string;
@@ -210,7 +211,7 @@ export default function PlayerStatus({ currentGame, className = '' }: PlayerStat
       {/* Emergency Actions */}
       <div className="space-y-2">
         <button 
-          onClick={() => window.location.href = '/'}
+          onClick={() => navigateTo('/')}
           className="w-full px-3 py-2 bg-blue-600 hover:bg-blue-500 rounded text-sm font-semibold transition-colors"
         >
           🏠 Hauptmenü

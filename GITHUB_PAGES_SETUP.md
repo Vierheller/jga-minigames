@@ -40,10 +40,10 @@ git push origin main
 
 Your game will be available at:
 ```
-https://[your-username].github.io/minigames
+https://[your-username].github.io/jga-minigames
 ```
 
-For example: `https://johndoe.github.io/minigames`
+For example: `https://vierheller.github.io/jga-minigames`
 
 ## 🔄 Automatic Deployments
 
@@ -64,10 +64,11 @@ Every time you push to the `main` branch:
 
 The setup includes:
 - ✅ **Static export** configuration for GitHub Pages
-- ✅ **Correct base path** handling (`/minigames`)
+- ✅ **Correct base path** handling (`/jga-minigames`)
 - ✅ **Asset prefix** for proper resource loading
 - ✅ **Automatic deployments** on every push
 - ✅ **Build optimization** for production
+- ✅ **Navigation utility** for proper routing
 
 ## 🔍 Troubleshooting
 
@@ -78,11 +79,12 @@ The setup includes:
 
 ### If the game doesn't load:
 1. Check browser console for errors
-2. Verify the URL is correct: `https://[username].github.io/minigames`
+2. Verify the URL is correct: `https://[username].github.io/jga-minigames`
 3. Wait a few minutes for DNS propagation
 
-### If assets don't load:
-- The configuration handles this automatically with `basePath` and `assetPrefix`
+### If navigation doesn't work:
+- The navigation utility automatically handles the base path
+- All links should work correctly in both development and production
 
 ## 🎉 Success!
 
@@ -91,6 +93,7 @@ Once deployed, your bachelor party game will be:
 - ✅ **Automatically updated** when you push changes
 - ✅ **Mobile responsive** and ready to play
 - ✅ **Completely free** to host
+- ✅ **Proper navigation** that works in production
 
 ## 🔗 Next Steps
 

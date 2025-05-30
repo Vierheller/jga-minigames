@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useGame } from '../../context/GameContext';
 import PlayerStatus from '../../components/PlayerStatus';
+import { navigateTo } from '../../utils/navigation';
 
 interface Position {
   x: number;
@@ -445,7 +446,7 @@ export default function AmbulanceGame() {
             Schließe zuerst die Hauptherausforderungen ab!
           </p>
           <button 
-            onClick={() => window.location.href = '/'}
+            onClick={() => navigateTo('/')}
             className="px-6 py-3 bg-red-600 hover:bg-red-500 rounded-lg font-semibold transition-colors"
           >
             ← Zurück zum Hauptmenü
@@ -467,7 +468,7 @@ export default function AmbulanceGame() {
         {/* Header */}
         <div className="text-center mb-8">
           <button 
-            onClick={() => window.location.href = '/'}
+            onClick={() => navigateTo('/')}
             className="absolute top-4 right-4 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
           >
             ← Zurück
@@ -778,7 +779,7 @@ export default function AmbulanceGame() {
               </p>
               <div className="flex gap-4 justify-center">
                 <button 
-                  onClick={() => window.location.href = '/'}
+                  onClick={() => navigateTo('/')}
                   className="px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg font-semibold transition-colors"
                 >
                   Zurück zum Hauptspiel
