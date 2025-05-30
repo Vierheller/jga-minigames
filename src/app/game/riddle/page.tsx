@@ -140,6 +140,8 @@ export default function RiddleGame() {
   };
 
   const handleSubmitAnswer = (riddleId: number) => {
+    if (isAlreadyCompleted) return; // Prevent answering if completed
+    
     const userAnswer = userAnswers[riddleId];
     if (!userAnswer?.trim()) return;
 

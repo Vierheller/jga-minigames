@@ -85,7 +85,7 @@ export default function PlayerStatus({ currentGame, className = '' }: PlayerStat
       {/* Header */}
       <div className="text-center mb-4">
         <h3 className="text-lg font-bold text-red-400 mb-1">🐍 PATIENT STATUS</h3>
-        <div className="text-sm text-gray-300">Dominik - Schlangenbiss</div>
+        <div className="text-sm text-gray-300">Dominik - Nuss-Allergie</div>
       </div>
 
       {/* Critical Timer */}
@@ -129,8 +129,8 @@ export default function PlayerStatus({ currentGame, className = '' }: PlayerStat
           </span>
         </div>
         <div className="flex justify-between text-sm">
-          <span className="text-gray-300">🎯 Aktuelle Mission:</span>
-          <span className="text-blue-400">{currentGame || 'Unbekannt'}</span>
+          <span className="text-gray-300">✅ Abgeschlossene Missionen:</span>
+          <span className="text-green-400">{Math.min(progress.completed, 5)}/5</span>
         </div>
       </div>
 
@@ -167,6 +167,43 @@ export default function PlayerStatus({ currentGame, className = '' }: PlayerStat
         </div>
         <div className="text-xs text-center mt-1 text-gray-400">
           {codeDigitsCollected}/5 Ziffern gesammelt
+        </div>
+      </div>
+
+      {/* Completed Missions */}
+      <div className="mb-4">
+        <div className="text-xs text-gray-300 mb-2 text-center">🎯 Missionen Status:</div>
+        <div className="space-y-1 text-xs">
+          <div className="flex justify-between">
+            <span className="text-gray-300">🧠 Gedächtnis:</span>
+            <span className={gameState.completedChallenges.includes('memory') ? 'text-green-400' : 'text-gray-500'}>
+              {gameState.completedChallenges.includes('memory') ? '✅ Abgeschlossen' : '⏳ Ausstehend'}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-300">🧪 Formel:</span>
+            <span className={gameState.completedChallenges.includes('puzzle') ? 'text-green-400' : 'text-gray-500'}>
+              {gameState.completedChallenges.includes('puzzle') ? '✅ Abgeschlossen' : '⏳ Ausstehend'}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-300">🌀 Labyrinth:</span>
+            <span className={gameState.completedChallenges.includes('maze') ? 'text-green-400' : 'text-gray-500'}>
+              {gameState.completedChallenges.includes('maze') ? '✅ Abgeschlossen' : '⏳ Ausstehend'}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-300">💓 Herzrhythmus:</span>
+            <span className={gameState.completedChallenges.includes('rhythm') ? 'text-green-400' : 'text-gray-500'}>
+              {gameState.completedChallenges.includes('rhythm') ? '✅ Abgeschlossen' : '⏳ Ausstehend'}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-300">🔍 Rätsel:</span>
+            <span className={gameState.completedChallenges.includes('riddle') ? 'text-green-400' : 'text-gray-500'}>
+              {gameState.completedChallenges.includes('riddle') ? '✅ Abgeschlossen' : '⏳ Ausstehend'}
+            </span>
+          </div>
         </div>
       </div>
 

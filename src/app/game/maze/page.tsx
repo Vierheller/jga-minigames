@@ -225,11 +225,12 @@ export default function MazeGame() {
   }, [explosionRange, playerPos]);
 
   const canMoveTo = useCallback((x: number, y: number): boolean => {
+    if (isAlreadyCompleted) return false; // Prevent movement if completed
     if (x < 0 || x >= GRID_SIZE || y < 0 || y >= GRID_SIZE) return false;
     if (!grid || !grid[y] || !grid[y][x]) return false;
     const cell = grid[y][x];
     return cell.type === 'empty' || cell.type === 'exit' || cell.type === 'powerup' || cell.type === 'bomb';
-  }, [grid]);
+  }, [isAlreadyCompleted, grid]);
 
   const collectPowerup = useCallback((powerupType: 'extraBomb' | 'biggerExplosion' | 'speed') => {
     console.log('Collecting powerup:', powerupType);
@@ -488,10 +489,10 @@ export default function MazeGame() {
           </button>
           
           <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
-            🌀 Labor-Flucht
+            🌀 Labyrinth-Flucht
           </h1>
           <p className="text-lg text-gray-300 mb-4">
-            Navigiere durch das Allergie-Labor und erreiche den Ausgang!
+            Navigiere durch das Allergie-Labyrinth und erreiche den Ausgang!
           </p>
           <div className="bg-blue-900/30 border border-blue-500 rounded-lg p-3 max-w-md mx-auto mb-4">
             <p className="text-sm text-blue-200 text-center">
@@ -516,7 +517,7 @@ export default function MazeGame() {
           {/* Left Side - Player Status */}
           <div className="lg:w-1/4 w-full">
             <PlayerStatus 
-              currentGame="Labor-Flucht"
+              currentGame="Labyrinth-Flucht"
               className="sticky top-4"
             />
           </div>
@@ -526,7 +527,7 @@ export default function MazeGame() {
             
             {/* Game Stats */}
             <div className="mb-6 bg-black/40 border border-green-500/30 rounded-lg p-4">
-              <h3 className="text-lg font-bold text-center mb-4 text-green-400">🎯 Labor-Status</h3>
+              <h3 className="text-lg font-bold text-center mb-4 text-green-400">🎯 Labyrinth-Status</h3>
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center text-sm">
                 <div>
@@ -653,9 +654,9 @@ export default function MazeGame() {
           <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
             <div className="bg-gradient-to-br from-green-600 to-green-700 p-8 rounded-lg text-center max-w-md mx-4">
               <div className="text-6xl mb-4">🎉</div>
-              <h2 className="text-2xl font-bold mb-4">Labor verlassen!</h2>
+              <h2 className="text-2xl font-bold mb-4">Labyrinth verlassen!</h2>
               <p className="mb-4">
-                Dominik hat erfolgreich das Allergie-Labor durchquert und den Ausgang erreicht!
+                Dominik hat erfolgreich das Allergie-Labyrinth durchquert und den Ausgang erreicht!
               </p>
               <p className="text-lg font-semibold mb-6 text-yellow-200">
                 Dritte Ziffer des Codes: <span className="text-3xl">9</span>
@@ -687,7 +688,7 @@ export default function MazeGame() {
               <p className="mb-6">
                 {timeLeft === 0 
                   ? 'Die Zeit ist abgelaufen! Die Allergie wirkt stärker...' 
-                  : 'Dominik wurde von einer Explosion erfasst! Das Labor ist gefährlich...'}
+                  : 'Dominik wurde von einer Explosion erfasst! Das Labyrinth ist gefährlich...'}
               </p>
               <button 
                 onClick={resetGame}

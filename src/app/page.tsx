@@ -86,6 +86,7 @@ export default function Home() {
   }, []);
 
   const progress = getProgress();
+  // Only count actual code digits (exclude final challenge which has no digit)
   const codeDigitsCollected = Object.keys(gameState.codeDigits).length;
 
   const formatTime = (seconds: number) => {
@@ -186,8 +187,8 @@ export default function Home() {
             </p>
             
             <p className="text-lg leading-relaxed">
-              Um das lebensrettende Antiallergikum zu erhalten, muss er <span className="font-bold text-green-400">ALLE 6 Herausforderungen</span> bestehen,
-              um den <span className="font-bold text-yellow-400">6-stelligen Code</span> zu entschlüsseln.
+              Um das lebensrettende Antiallergikum zu erhalten, muss er <span className="font-bold text-green-400">5 Herausforderungen</span> bestehen,
+              um den <span className="font-bold text-yellow-400">5-stelligen Code</span> zu entschlüsseln.
             </p>
 
             <div className="bg-blue-900/30 border border-blue-500 rounded p-4 mt-6">

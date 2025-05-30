@@ -42,6 +42,7 @@ export default function HeartRhythmGame() {
 
   const { gameState, completeChallenge } = useGame();
   const isLocked = !gameState.completedChallenges.includes('maze'); // Unlocked after maze
+  const isAlreadyCompleted = gameState.completedChallenges.includes('rhythm');
 
   // Game constants
   const CANVAS_WIDTH = 800;
@@ -443,6 +444,7 @@ export default function HeartRhythmGame() {
   }, [isLocked]);
 
   const startGame = () => {
+    if (isAlreadyCompleted) return; // Prevent starting if completed
     setGameStarted(true);
     gameStartTimeRef.current = Date.now();
     generateBeatPattern();

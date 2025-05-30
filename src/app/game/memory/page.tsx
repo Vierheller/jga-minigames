@@ -100,6 +100,9 @@ export default function MemoryGame() {
   }, [matchedPairs, isAlreadyCompleted, completeChallenge]);
 
   const handleCardClick = (cardId: number) => {
+    // Prevent gameplay if already completed
+    if (isAlreadyCompleted) return;
+    
     if (!gameStarted) setGameStarted(true);
     
     const card = cards.find(c => c.id === cardId);
@@ -188,7 +191,19 @@ export default function MemoryGame() {
             </div>
 
             {/* Game Board */}
-            <div className="grid grid-cols-4 gap-4 max-w-2xl mx-auto mb-8">
+            <div className="grid grid-cols-4 gap-4 max-w-2xl mx-auto mb-8 relative">
+              {/* Completed Overlay */}
+              {isAlreadyCompleted && (
+                <div className="absolute inset-0 bg-black/80 backdrop-blur-sm rounded-lg flex items-center justify-center z-10">
+                  <div className="text-center p-6">
+                    <div className="text-6xl mb-4">✅</div>
+                    <h3 className="text-2xl font-bold text-green-400 mb-2">Bereits abgeschlossen!</h3>
+                    <p className="text-gray-300 mb-4">Du hast diese Herausforderung bereits gemeistert.</p>
+                    <p className="text-yellow-400 font-semibold">Ziffer 7 erhalten!</p>
+                  </div>
+                </div>
+              )}
+              
               {cards.map((card) => (
                 <div
                   key={card.id}

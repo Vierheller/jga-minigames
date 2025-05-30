@@ -145,7 +145,7 @@ export default function PuzzleGame() {
 
   // Handle move
   const handleMove = (direction: Direction) => {
-    if (gameWon || gameOver) return;
+    if (gameWon || gameOver || isAlreadyCompleted) return;
 
     if (!gameStarted) setGameStarted(true);
 
@@ -177,7 +177,7 @@ export default function PuzzleGame() {
   // Keyboard controls
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      if (isLocked) return;
+      if (isLocked || isAlreadyCompleted) return;
       
       switch (e.key) {
         case 'ArrowUp':
@@ -378,7 +378,19 @@ export default function PuzzleGame() {
             </div>
             
             {/* Game Board */}
-            <div className="bg-gray-800 p-4 rounded-lg mb-8 max-w-md mx-auto">
+            <div className="bg-gray-800 p-4 rounded-lg mb-8 max-w-md mx-auto relative">
+              {/* Completed Overlay */}
+              {isAlreadyCompleted && (
+                <div className="absolute inset-0 bg-black/80 backdrop-blur-sm rounded-lg flex items-center justify-center z-10">
+                  <div className="text-center p-6">
+                    <div className="text-6xl mb-4">✅</div>
+                    <h3 className="text-2xl font-bold text-green-400 mb-2">Bereits abgeschlossen!</h3>
+                    <p className="text-gray-300 mb-4">Du hast diese Herausforderung bereits gemeistert.</p>
+                    <p className="text-yellow-400 font-semibold">Ziffer 3 erhalten!</p>
+                  </div>
+                </div>
+              )}
+              
               <div className="grid grid-cols-4 gap-2">
                 {board.map((row, i) =>
                   row.map((cell, j) => (
