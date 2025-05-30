@@ -76,10 +76,18 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         const newTime = timeLeft - 1;
         setTimeLeft(newTime);
         localStorage.setItem('dominik-venom-timer', newTime.toString());
+        
+        // Check if time is up and final challenge not completed
+        if (newTime <= 0 && !gameState.completedChallenges.includes('final')) {
+          // Redirect to game over screen (avoid redirect loops)
+          if (!window.location.pathname.includes('/gameover')) {
+            window.location.href = '/gameover';
+          }
+        }
       }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [timeLeft]);
+  }, [timeLeft, gameState.completedChallenges]);
 
   const completeChallenge = (challengeId: string, digit: string, position: number) => {
     setGameState(prev => {

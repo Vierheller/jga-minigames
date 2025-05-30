@@ -23,6 +23,16 @@ export default function PlayerStatus({ currentGame, className = '' }: PlayerStat
     }
   }, [timeLeft]);
 
+  // Redirect to game over if time is up and final not completed
+  useEffect(() => {
+    if (timeLeft <= 0 && !gameState.completedChallenges.includes('final')) {
+      // Avoid redirect loops
+      if (!window.location.pathname.includes('/gameover')) {
+        window.location.href = '/gameover';
+      }
+    }
+  }, [timeLeft, gameState.completedChallenges]);
+
   const progress = getProgress();
   const codeDigitsCollected = Object.keys(gameState.codeDigits).length;
 
@@ -128,19 +138,19 @@ export default function PlayerStatus({ currentGame, className = '' }: PlayerStat
       <div className="mb-4">
         <div className="flex justify-between text-xs mb-2">
           <span className="text-gray-300">Überlebens-Fortschritt:</span>
-          <span className="text-green-400">{progress.completed}/5</span>
+          <span className="text-green-400">{Math.min(progress.completed, 5)}/5</span>
         </div>
         <div className="w-full bg-gray-700 rounded-full h-2 overflow-hidden">
           <div 
             className="h-full bg-gradient-to-r from-red-500 via-orange-500 to-green-500 transition-all duration-500"
-            style={{ width: `${(progress.completed / 5) * 100}%` }}
+            style={{ width: `${(Math.min(progress.completed, 5) / 5) * 100}%` }}
           ></div>
         </div>
         <div className="text-xs text-center mt-1">
-          {progress.completed === 5 ? (
+          {Math.min(progress.completed, 5) === 5 ? (
             <span className="text-green-400 font-bold">✅ ALLE MISSIONEN ERFÜLLT!</span>
           ) : (
-            <span className="text-orange-400">{5 - progress.completed} Missionen verbleibend</span>
+            <span className="text-orange-400">{5 - Math.min(progress.completed, 5)} Missionen verbleibend</span>
           )}
         </div>
       </div>
@@ -149,14 +159,14 @@ export default function PlayerStatus({ currentGame, className = '' }: PlayerStat
       <div className="mb-4">
         <div className="text-xs text-gray-300 mb-2 text-center">💉 Antiallergikum-Code:</div>
         <div className="text-center font-mono text-lg bg-gray-800 rounded p-2">
-          {[1,2,3,4,5,6].map(pos => (
+          {[1,2,3,4,5].map(pos => (
             <span key={pos} className={gameState.codeDigits[pos] ? 'text-green-400' : 'text-gray-600'}>
               {gameState.codeDigits[pos] || '?'}
             </span>
           ))}
         </div>
         <div className="text-xs text-center mt-1 text-gray-400">
-          {codeDigitsCollected}/6 Ziffern gesammelt
+          {codeDigitsCollected}/5 Ziffern gesammelt
         </div>
       </div>
 
@@ -183,7 +193,7 @@ export default function PlayerStatus({ currentGame, className = '' }: PlayerStat
           🏥 Notfall-Protokoll aktiv
         </div>
         <div className="text-xs text-gray-500 mt-1">
-          Patient: Dominik | Biss: Giftschlange
+          Patient: Dominik | Nuss-Allergie
         </div>
       </div>
     </div>

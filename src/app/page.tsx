@@ -50,7 +50,7 @@ const GAME_CHALLENGES = [
     description: 'Löse die finalen Geheimnisse',
     difficulty: 'Schwer',
     estimatedTime: '3-5 Min',
-    digit: '?',
+    digit: '1',
     position: 5,
     route: '/game/riddle'
   },
@@ -60,7 +60,7 @@ const GAME_CHALLENGES = [
     description: 'Gib den vollständigen Code ein',
     difficulty: 'Final',
     estimatedTime: '1-2 Min',
-    digit: '??',
+    digit: '',
     position: 6,
     route: '/game/final'
   }
@@ -217,28 +217,35 @@ export default function Home() {
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span>Herausforderungen:</span>
-                <span className="text-green-400">{progress.completed}/5 (ALLE ERFORDERLICH)</span>
+                <span className="text-green-400">{Math.min(progress.completed, 5)}/5 (ALLE ERFORDERLICH)</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span>Code-Ziffern:</span>
-                <span className="text-yellow-400">{codeDigitsCollected}/6</span>
+                <span className="text-yellow-400">{codeDigitsCollected}/5</span>
               </div>
               <div className="w-full bg-gray-700 rounded-full h-3 mt-3">
                 <div 
                   className="h-full bg-gradient-to-r from-red-500 via-orange-500 to-green-500 rounded-full transition-all duration-500"
-                  style={{ width: `${(progress.completed / 5) * 100}%` }}
+                  style={{ width: `${(Math.min(progress.completed, 5) / 5) * 100}%` }}
                 ></div>
               </div>
               {codeDigitsCollected > 0 && (
                 <div className="mt-3 p-2 bg-gray-800 rounded text-center">
                   <span className="text-xs text-gray-400">Gesammelte Code-Ziffern:</span>
                   <div className="text-lg font-mono mt-1">
-                    {[1,2,3,4,5,6].map(pos => (
+                    {[1,2,3,4,5].map(pos => (
                       <span key={pos} className={gameState.codeDigits[pos] ? 'text-green-400' : 'text-gray-600'}>
                         {gameState.codeDigits[pos] || '?'}
                       </span>
                     ))}
                   </div>
+                </div>
+              )}
+              {codeDigitsCollected === 5 && !gameState.completedChallenges.includes('final') && (
+                <div className="mt-3 p-2 bg-yellow-900/30 border border-yellow-500 rounded text-center">
+                  <span className="text-yellow-200 text-sm">
+                    🔓 Alle Ziffern gesammelt! Das Finale ist freigeschaltet!
+                  </span>
                 </div>
               )}
             </div>
@@ -328,7 +335,7 @@ export default function Home() {
                       <div className="flex justify-between">
                         <span>Code-Ziffer:</span>
                         <span className="text-green-400 font-mono">
-                          {status === 'completed' ? challenge.digit : '?'}
+                          {challenge.id === 'final' ? 'Finale' : (status === 'completed' ? challenge.digit : '?')}
                         </span>
                       </div>
                     </div>
@@ -357,12 +364,12 @@ export default function Home() {
         {/* Status Bar */}
         <div className="mt-12 mb-16 flex items-center space-x-4 text-sm">
           <div className="flex items-center space-x-2">
-            <div className={`w-3 h-3 rounded-full animate-pulse ${progress.completed === 5 ? 'bg-green-500' : 'bg-red-500'}`}></div>
-            <span>Dominiks Zustand: {progress.completed === 5 ? 'Gerettet!' : 'Vergiftet'}</span>
+            <div className={`w-3 h-3 rounded-full animate-pulse ${gameState.completedChallenges.includes('final') ? 'bg-green-500' : 'bg-red-500'}`}></div>
+            <span>Dominiks Zustand: {gameState.completedChallenges.includes('final') ? 'Gerettet!' : 'Vergiftet'}</span>
           </div>
           <div className="flex items-center space-x-2">
             <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-            <span>Herausforderungen: {progress.completed}/5 (ALLE ERFORDERLICH)</span>
+            <span>Herausforderungen: {Math.min(progress.completed, 5)}/5 (ALLE ERFORDERLICH)</span>
           </div>
         </div>
 
