@@ -409,21 +409,21 @@ export default function MazeGame() {
 
   const getCellDisplay = (cell: Cell, x: number, y: number) => {
     if (x === playerPos.x && y === playerPos.y) {
-      return { emoji: '🧑‍🔬', bg: 'bg-blue-500', text: 'text-white', countdown: null };
+      return { emoji: '🧑‍🔬', bg: 'bg-blue-500', text: 'text-white', countdown: null, isExit: false };
     }
     
     switch (cell.type) {
       case 'wall':
-        return { emoji: '🧱', bg: 'bg-gray-800', text: 'text-gray-300', countdown: null };
+        return { emoji: '🧱', bg: 'bg-gray-800', text: 'text-gray-300', countdown: null, isExit: false };
       case 'destructible':
-        return { emoji: '📦', bg: 'bg-yellow-700', text: 'text-yellow-200', countdown: null };
+        return { emoji: '📦', bg: 'bg-yellow-700', text: 'text-yellow-200', countdown: null, isExit: false };
       case 'bomb':
-        const timer = Math.ceil((cell.bombTimer || 0) / 1000);
-        return { emoji: `💣`, bg: 'bg-red-600', text: 'text-white', countdown: timer };
+        const timer = Math.max(1, Math.ceil((cell.bombTimer || 0) / 1000));
+        return { emoji: `💣`, bg: 'bg-red-600', text: 'text-white', countdown: timer, isExit: false };
       case 'explosion':
-        return { emoji: '💥', bg: 'bg-orange-500', text: 'text-white', countdown: null };
+        return { emoji: '💥', bg: 'bg-orange-500', text: 'text-white', countdown: null, isExit: false };
       case 'exit':
-        return { emoji: '🚪', bg: 'bg-green-600', text: 'text-white', countdown: null };
+        return { emoji: '🎯', bg: 'bg-green-600', text: 'text-white', countdown: null, isExit: true };
       case 'powerup':
         const powerupEmojis = {
           extraBomb: '💣',
@@ -434,10 +434,11 @@ export default function MazeGame() {
           emoji: powerupEmojis[cell.powerupType!], 
           bg: 'bg-purple-600', 
           text: 'text-white',
-          countdown: null
+          countdown: null,
+          isExit: false
         };
       default:
-        return { emoji: '', bg: 'bg-gray-600', text: 'text-gray-400', countdown: null };
+        return { emoji: '', bg: 'bg-gray-600', text: 'text-gray-400', countdown: null, isExit: false };
     }
   };
 
@@ -489,9 +490,17 @@ export default function MazeGame() {
           <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
             🌀 Labor-Flucht
           </h1>
-          <p className="text-lg text-gray-300">
+          <p className="text-lg text-gray-300 mb-4">
             Navigiere durch das Giftlabor und erreiche den Ausgang!
           </p>
+          <div className="bg-blue-900/30 border border-blue-500 rounded-lg p-3 max-w-md mx-auto mb-4">
+            <p className="text-sm text-blue-200 text-center">
+              🎯 <strong>ZIEL:</strong> Erreiche das pulsierende Ziel <span className="animate-pulse">🎯</span>
+            </p>
+            <p className="text-xs text-blue-300 text-center mt-2">
+              💣 Zerstöre Hindernisse • ⚡ Sammle Power-ups • 🚪 Finde den Ausgang
+            </p>
+          </div>
           
           {isAlreadyCompleted && (
             <div className="mt-4 bg-green-900/30 border border-green-500 rounded-lg p-3 max-w-md mx-auto">
@@ -551,22 +560,26 @@ export default function MazeGame() {
                 <div className="grid grid-cols-13 gap-1">
                   {grid.map((row, y) =>
                     row.map((cell, x) => {
-                      const { emoji, bg, text, countdown } = getCellDisplay(cell, x, y);
+                      const { emoji, bg, text, countdown, isExit } = getCellDisplay(cell, x, y);
                       return (
                         <div
                           key={`${x}-${y}`}
                           className={`
-                            aspect-square rounded flex items-center justify-center text-xs font-bold relative
+                            aspect-square rounded flex items-center justify-center text-2xl font-bold relative
                             ${bg} ${text}
+                            ${isExit ? 'animate-pulse ring-2 ring-yellow-400 ring-offset-1' : ''}
                             transition-all duration-200
                           `}
                         >
                           <div className="flex flex-col items-center justify-center">
-                            <div className="text-xs">{emoji}</div>
+                            <div className="text-2xl">{emoji}</div>
                             {countdown && countdown > 0 && (
-                              <div className="text-xs font-bold text-yellow-300 mt-0.5">
+                              <div className="text-xs font-bold text-yellow-300 absolute bottom-0 w-full text-center">
                                 {countdown}
                               </div>
+                            )}
+                            {isExit && (
+                              <div className="absolute -top-1 -right-1 text-xs">✨</div>
                             )}
                           </div>
                         </div>
@@ -626,8 +639,10 @@ export default function MazeGame() {
 
               {/* Legend */}
               <div className="text-xs text-gray-400 space-y-1">
-                <div>🧑‍🔬 Du | 📦 Hindernis | 💣 Bombe | 💥 Explosion | 🚪 Ausgang</div>
+                <div className="text-center font-semibold text-yellow-400 mb-2">🎯 ERREICHE DAS ZIEL 🎯</div>
+                <div>🧑‍🔬 Du | 📦 Hindernis | 💣 Bombe | 💥 Explosion</div>
                 <div>💣 Extra Bombe | 💥 Größere Explosion | ⚡ Geschwindigkeit</div>
+                <div className="text-green-400 font-semibold">🎯 = AUSGANG (Ziel erreichen!)</div>
               </div>
             </div>
           </div>
