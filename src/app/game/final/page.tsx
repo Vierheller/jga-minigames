@@ -14,15 +14,14 @@ export default function FinalGame() {
   const [feedback, setFeedback] = useState<{ type: 'error' | 'success' | 'hint' | null; message: string }>({ type: null, message: '' });
 
   const { gameState, isChallengeLocked, timeLeft, completeChallenge } = useGame();
-  const isLocked = isChallengeLocked('final');
 
   // The correct code based on collected digits
   const correctCode = [
-    gameState.codeDigits[1] || '?', // Memory game
-    gameState.codeDigits[2] || '?', // Puzzle game  
-    gameState.codeDigits[3] || '?', // Maze game
-    gameState.codeDigits[4] || '?', // Rhythm game
-    gameState.codeDigits[5] || '?'  // Riddle game
+    '7',
+    '3',
+    '9',
+    '2',
+    '1'
   ];
 
   const collectedDigits = Object.keys(gameState.codeDigits).length;
@@ -123,31 +122,6 @@ export default function FinalGame() {
       default: return 'text-red-500';
     }
   };
-
-  if (isLocked) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-yellow-900 to-black text-white p-4 flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-6xl mb-4">🔒</div>
-          <h1 className="text-3xl font-bold mb-4">Finale Herausforderung gesperrt</h1>
-          <p className="text-lg text-gray-300 mb-6">
-            Schließe alle Herausforderungen ab, um das Finale freizuschalten.
-          </p>
-          <div className="bg-blue-900/30 border border-blue-500 rounded-lg p-4 max-w-md mx-auto mb-6">
-            <p className="text-blue-200 text-sm">
-              Schließe alle Herausforderungen ab, um das Finale freizuschalten.
-            </p>
-          </div>
-          <button 
-            onClick={() => navigateTo('/')}
-            className="px-6 py-3 bg-yellow-600 hover:bg-yellow-500 rounded-lg font-semibold transition-colors"
-          >
-            ← Zurück zum Hauptmenü
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-yellow-900 to-black text-white p-4">

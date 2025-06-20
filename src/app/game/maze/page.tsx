@@ -664,7 +664,7 @@ export default function MazeGame() {
               </p>
               <div className="flex gap-4 justify-center">
                 <button 
-                  onClick={() => navigateTo('/game/riddle')}
+                  onClick={() => navigateTo('/game/rhythm')}
                   className="px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg font-semibold transition-colors"
                 >
                   Nächste Herausforderung →

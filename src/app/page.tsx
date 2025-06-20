@@ -103,6 +103,9 @@ export default function Home() {
   };
 
   const getChallengeStatus = (challengeId: string) => {
+    if (challengeId === 'final') {
+      return 'available';
+    }
     if (gameState.completedChallenges.includes(challengeId)) {
       return 'completed';
     } else if (isChallengeLocked(challengeId)) {

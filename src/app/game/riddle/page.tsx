@@ -26,7 +26,7 @@ const RIDDLES: Riddle[] = [
   {
     id: 2,
     question: "Ich habe Städte, aber keine Häuser. Ich habe Berge, aber keine Bäume. Ich habe Wasser, aber keine Fische. Was bin ich?",
-    hint: "Du findest mich in jedem Auto und an jeder Wand.",
+    hint: "Du findest mich in jedem Auto und an der Wand.",
     answer: "karte",
     category: "Objekte",
     difficulty: 'medium'
@@ -49,38 +49,30 @@ const RIDDLES: Riddle[] = [
   },
   {
     id: 5,
-    question: "Dominiks Lieblingszahl ist die Anzahl der Buchstaben in seinem Namen. Welche Zahl ist das?",
-    hint: "Zähle die Buchstaben: D-O-M-I-N-I-K",
-    answer: "7",
+    question: "Berechne die Summe der Positionen der Buchstaben im Alphabet eines Spitznamens Domi (A=1, B=2, C=3, ...)",
+    hint: "Die Antwort auf alles minus 1",
+    answer: "41",
     category: "Persönlich",
     difficulty: 'easy'
   },
   {
     id: 6,
-    question: "Ich bin am Anfang der Ewigkeit, am Ende der Zeit und des Raums, am Anfang jedes Endes und am Ende jedes Ortes. Was bin ich?",
-    hint: "Schaue auf die ersten und letzten Buchstaben der Wörter.",
-    answer: "e",
-    category: "Wortspiel",
+    question: "Welcher Gegenstand wird benötigt, um einen Netherportal in Minecraft zu aktivieren?",
+    hint: "Wird mit Flint & Steel gebaut.",
+    answer: "Feuerzeug",
+    category: "Gaming",
     difficulty: 'hard'
   },
   {
     id: 7,
-    question: "In welchem Jahr wurde Dominik geboren, wenn er 2024 genau 30 Jahre alt wird?",
-    hint: "Rechne rückwärts von 2024.",
-    answer: "1994",
-    category: "Persönlich",
+    question: "Welcher F1-Fahrer hält den Rekord für die meisten Pole Positions in seiner Karriere? (Nachname)",
+    hint: "Hammer Time",
+    answer: "Hamilton",
+    category: "Formel 1",
     difficulty: 'easy'
   },
   {
     id: 8,
-    question: "In World of Warcraft: Welche Hauptstadt der Allianz wurde von Deathwing zerstört und liegt in Trümmern?",
-    hint: "Diese Stadt war das Zentrum des menschlichen Königreichs und liegt in den Östlichen Königreichen.",
-    answer: "sturmwind",
-    category: "Gaming",
-    difficulty: 'medium'
-  },
-  {
-    id: 9,
     question: "Ich spreche ohne Mund und höre ohne Ohren. Ich habe keinen Körper, aber ich werde durch den Wind zum Leben erweckt. Was bin ich?",
     hint: "Du hörst mich in den Bergen und leeren Räumen.",
     answer: "echo",
@@ -103,7 +95,7 @@ export default function RiddleGame() {
   const isLocked = isChallengeLocked('riddle');
 
   const totalRiddles = RIDDLES.length;
-  const riddlesNeeded = 7; // Need to solve 7 out of 9 riddles
+  const riddlesNeeded = 6; // Need to solve 7 out of 9 riddles
 
   // Check win condition
   useEffect(() => {

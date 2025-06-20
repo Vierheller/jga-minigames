@@ -687,10 +687,10 @@ export default function HeartRhythmGame() {
               </div>
               <div className="flex gap-4 justify-center">
                 <button 
-                  onClick={() => navigateTo('/')}
+                  onClick={() => navigateTo('/game/riddle')}
                   className="px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg font-semibold transition-colors"
                 >
-                  Weiter zum Hauptspiel
+                  Nächste Herausforderung →
                 </button>
                 <button 
                   onClick={resetGame}

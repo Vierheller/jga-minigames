@@ -9,8 +9,8 @@ type Board = number[][];
 type Direction = 'up' | 'down' | 'left' | 'right';
 
 const GRID_SIZE = 4;
-const WIN_POINTS = 2000;
-const BONUS_POINTS = 3000;
+const WIN_POINTS = 4000;
+const BONUS_POINTS = 5000;
 
 export default function PuzzleGame() {
   const [board, setBoard] = useState<Board>(() => 
@@ -340,24 +340,7 @@ export default function PuzzleGame() {
                 )}
               </div>
 
-              {/* Bonus Progress Bar */}
-              <div className="mb-4">
-                <div className="flex justify-between text-sm mb-2">
-                  <span>Bonus: {BONUS_POINTS} Punkte</span>
-                  <span className="text-yellow-400">{Math.max(0, score - WIN_POINTS)}/{BONUS_POINTS - WIN_POINTS}</span>
-                </div>
-                <div className="w-full bg-gray-700 rounded-full h-2 overflow-hidden">
-                  <div 
-                    className="h-full bg-gradient-to-r from-yellow-500 to-orange-500 transition-all duration-500 ease-out"
-                    style={{ width: `${getBonusProgressPercentage()}%` }}
-                  ></div>
-                </div>
-                {timeBonus && (
-                  <div className="text-center mt-2 text-yellow-400 font-bold">
-                    ⏰ +60s Bonus Zeit erhalten!
-                  </div>
-                )}
-              </div>
+              
 
               {/* Stats */}
               <div className="grid grid-cols-3 gap-4 text-center text-sm">
