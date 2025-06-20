@@ -25,7 +25,7 @@ export default function HeartRhythmGame() {
   const [heartRate, setHeartRate] = useState(72); // Normal resting heart rate
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(90); // 90 seconds to complete
+  const [timeLeft, setTimeLeft] = useState(60); // 90 seconds to complete
   const [beats, setBeats] = useState<HeartBeat[]>([]);
   const [ecgData, setEcgData] = useState<ECGPoint[]>([]);
   const [difficulty, setDifficulty] = useState(1);
@@ -59,7 +59,7 @@ export default function HeartRhythmGame() {
     setHeartRate(72);
     setScore(0);
     setStreak(0);
-    setTimeLeft(90);
+    setTimeLeft(60);
     setBeats([]);
     setEcgData([]);
     setDifficulty(1);
@@ -74,8 +74,8 @@ export default function HeartRhythmGame() {
   const generateBeatPattern = useCallback(() => {
     const now = Date.now();
     const interval = (60 / heartRate) * 1000; // Convert BPM to ms
-    const variation = difficulty * 30; // Reduced variation to prevent overlapping
-    const minInterval = 400; // Minimum 400ms between beats to prevent overlapping
+    const variation = difficulty * 120; // Increased variation for more complex patterns
+    const minInterval = 200; // Minimum 200ms between beats to prevent overlapping
     
     const newBeats: HeartBeat[] = [];
     let lastBeatTime = now;
@@ -389,11 +389,11 @@ export default function HeartRhythmGame() {
       
       // Update difficulty based on time
       const elapsed = (now - gameStartTimeRef.current) / 1000;
-      const newDifficulty = 1 + Math.floor(elapsed / 20) * 0.5; // Increase every 20 seconds
+      const newDifficulty = 1 + Math.floor(elapsed / 20) ; // Increase every 20 seconds
       setDifficulty(newDifficulty);
       
       // Update heart rate based on health and difficulty
-      const targetRate = 72 + (difficulty - 1) * 10 + (100 - heartHealth) * 0.3;
+      const targetRate = 72 + (difficulty - 1) * 20 + (100 - heartHealth) * 0.8;
       setHeartRate(hr => hr + (targetRate - hr) * 0.1);
       
       // Generate new beats if needed
@@ -470,7 +470,7 @@ export default function HeartRhythmGame() {
     return 'LEBENSGEFAHR!';
   };
 
-  if (isLocked) {
+  if (false && isLocked) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-red-900 to-black text-white p-4 flex items-center justify-center">
         <div className="text-center">
@@ -604,7 +604,7 @@ export default function HeartRhythmGame() {
                     Drücke die LEERTASTE im perfekten Takt, um Dominiks Herz zu stabilisieren.
                   </p>
                   <div className="mb-6 text-center">
-                    <div className="text-sm text-yellow-300 mb-2">🎯 Ziel: Überlebe 90 Sekunden mit stabiler Herzgesundheit</div>
+                    <div className="text-sm text-yellow-300 mb-2">🎯 Ziel: Überlebe 60 Sekunden mit stabiler Herzgesundheit</div>
                     <div className="text-xs text-gray-400">💡 Perfekte Treffer heilen das Herz • Verpasste Schläge schaden</div>
                   </div>
                   <button 

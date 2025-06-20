@@ -32,6 +32,8 @@ const CHALLENGES = [
   'final'
 ];
 
+const gameTime = 8;
+
 const initialState: GameState = {
   completedChallenges: [],
   codeDigits: {},
@@ -43,7 +45,7 @@ const initialState: GameState = {
 
 export function GameProvider({ children }: { children: React.ReactNode }) {
   const [gameState, setGameState] = useState<GameState>(initialState);
-  const [timeLeft, setTimeLeft] = useState(12 * 60); // 12 minutes
+  const [timeLeft, setTimeLeft] = useState(gameTime * 60); // 12 minutes
 
   // Load state from localStorage on mount
   useEffect(() => {
@@ -111,7 +113,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
 
   const resetGame = () => {
     setGameState(initialState);
-    setTimeLeft(12 * 60); // Reset to 12 minutes
+    setTimeLeft(gameTime * 60); // Reset to 12 minutes
     localStorage.removeItem('dominik-antidote-game');
     localStorage.removeItem('dominik-venom-timer');
   };

@@ -187,7 +187,7 @@ export default function Home() {
             
             <p className="text-lg leading-relaxed">
               <span className="font-bold text-white">Dominik</span> hat ausversehen Nüsse gegessen! 
-              Die Allergie breitet sich schnell aus und er hat nur noch <span className="font-bold text-red-400">15 Minuten</span> Zeit.
+              Die Allergie breitet sich schnell aus und er hat nur noch <span className="font-bold text-red-400">8 Minuten</span> Zeit.
             </p>
             
             <p className="text-lg leading-relaxed">
