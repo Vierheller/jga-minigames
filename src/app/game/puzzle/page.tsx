@@ -9,7 +9,7 @@ type Board = number[][];
 type Direction = 'up' | 'down' | 'left' | 'right';
 
 const GRID_SIZE = 4;
-const WIN_POINTS = 4000;
+const WIN_POINTS = 2000;
 const BONUS_POINTS = 5000;
 
 export default function PuzzleGame() {
