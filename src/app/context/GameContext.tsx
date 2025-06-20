@@ -32,7 +32,7 @@ const CHALLENGES = [
   'final'
 ];
 
-const gameTime = 8;
+const gameTime = 10;
 
 const initialState: GameState = {
   completedChallenges: [],
